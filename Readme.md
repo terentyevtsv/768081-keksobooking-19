@@ -1,7 +1,7 @@
 # Личный проект «Кексобукинг» [![Build status][travis-image]][travis-url]
 
 * Студент: [Сергей Терентьев](https://up.htmlacademy.ru/javascript/19/user/768081).
-* Наставник: `Неизвестно`.
+* Наставник: [Елисей Лукин](https://htmlacademy.ru/profile/id1338749).
 
 ---
 
