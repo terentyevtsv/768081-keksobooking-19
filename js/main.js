@@ -41,6 +41,17 @@ var PHOTOS = [
   'http://o0.github.io/assets/images/tokyo/hotel3.jpg'
 ];
 
+var DESCRIPTIONS = [
+  'Если вы хотите закатить мегатусовку этот вариант для вас',
+  'Идеально подходит для второго дня свадьбы',
+  'Замечательно подходит для туристических поездок большой компании друзей',
+  'Если хочется уединиться со второй половинкой',
+  'Отметить юбилей и хорошо провести время на природе',
+  'Отметить новый год и всем уместиться здесь не проблема',
+  'Искупаться в бассейне и провести спокойный вечер в уюте',
+  'Закатить шумную вечеринку никто вам здесь не помешает',
+];
+
 var MIN_COORDINATE_Y = 130;
 var MAX_COORDINATE_Y = 630;
 
@@ -52,6 +63,9 @@ var MAX_ROOM_COUNT = 5;
 
 var MIN_GUEST_COUNT = 1;
 var MAX_GUEST_COUNT = 10;
+
+var PIN_WIDTH = 50;
+var PIN_HEIGHT = 70;
 
 var mapPinTemplate = document
     .querySelector('#pin')
@@ -79,7 +93,7 @@ var generateRandomAdvertisements = function () {
         checkin: CHECKIN_CHECKOUT_TIMES[getRandomInteger(0, checkinCheckoutTimesMaxIndex)],
         checkout: CHECKIN_CHECKOUT_TIMES[getRandomInteger(0, checkinCheckoutTimesMaxIndex)],
         features: getRandomFeatures(),
-        description: '',
+        description: DESCRIPTIONS[i],
         photos: getRandomPhotos()
       },
 
@@ -152,8 +166,7 @@ var getRandomPhotos = function () {
 // Функция возвращает случайный целый элемент в выбранном диапазоне значений
 var getRandomInteger = function (min, max) {
   // случайное число от min до (max+1)
-  var randomValue = min + Math.random() * (max + 1 - min);
-  return Math.floor(randomValue);
+  return Math.floor(min + Math.random() * (max + 1 - min));
 };
 
 var activateMap = function () {
@@ -162,13 +175,12 @@ var activateMap = function () {
 
 var renderMapPin = function (advertisement) {
   var mapPin = mapPinTemplate.cloneNode(true);
+  mapPin.style.left = (advertisement.location.x - 0.5 * PIN_WIDTH) + 'px';
+  mapPin.style.top = (advertisement.location.y - PIN_HEIGHT) + 'px';
 
   var icon = mapPin.querySelector('img');
   icon.src = advertisement.author.avatar;
   icon.alt = advertisement.offer.title;
-
-  mapPin.style.left = (advertisement.location.x + icon.width) + 'px';
-  mapPin.style.top = (advertisement.location.y + icon.height) + 'px';
 
   return mapPin;
 };
