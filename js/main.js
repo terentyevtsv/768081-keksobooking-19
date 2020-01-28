@@ -84,7 +84,7 @@ var generateRandomAdvertisements = function () {
       },
 
       location: {
-        x: getRandomInteger(0, mapSection.style.width),
+        x: getRandomInteger(0, mapSection.clientWidth),
         y: getRandomInteger(MIN_COORDINATE_Y, MAX_COORDINATE_Y)
       }
     };
