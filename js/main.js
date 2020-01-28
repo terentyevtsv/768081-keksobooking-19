@@ -20,6 +20,13 @@ var BUILDING_TYPES = [
   'bungalo'
 ];
 
+var BUILDING_DESCRIPTIONS = [
+  'Дворец',
+  'Квартира',
+  'Дом',
+  'Бунгало',
+];
+
 var CHECKIN_CHECKOUT_TIMES = [
   '12:00',
   '13:00',
@@ -70,6 +77,11 @@ var mapPinTemplate = document
     .querySelector('.map__pin');
 
 var mapSection = document.querySelector('.map');
+
+var mapCardTemplate = document
+  .querySelector('#card')
+  .content
+  .querySelector('.map__card');
 
 // Генератор случайных объявлений
 var generateRandomAdvertisements = function () {
@@ -174,6 +186,12 @@ var renderMapPins = function () {
   var advertisements = generateRandomAdvertisements();
   var fragment = document.createDocumentFragment();
   for (var i = 0; i < advertisements.length; ++i) {
+    if (i === 0) {
+      var mapCard = fillAdvertisementCard(advertisements[i]);
+      var mapFiltersContainer = mapSection
+        .querySelector('.map__filters-container');
+      mapSection.insertBefore(mapCard, mapFiltersContainer);
+    }
     var mapPin = renderMapPin(advertisements[i]);
     fragment.appendChild(mapPin);
   }
@@ -197,5 +215,110 @@ var renderMapPins = function () {
   }
 };
 
+var fillAdvertisementCard = function (advertisement) {
+  var mapCard = mapCardTemplate.cloneNode(true);
+
+  var buildingDescriptions = {};
+  for (var i = 0; i < BUILDING_TYPES.length; ++i) {
+    buildingDescriptions[BUILDING_TYPES[i]] = BUILDING_DESCRIPTIONS[i];
+  }
+
+  // вставка значений
+  mapCard.querySelector('.popup__title').textContent =
+    advertisement.offer.title;
+  mapCard.querySelector('.popup__text--address').textContent =
+    advertisement.offer.address;
+  mapCard.querySelector('.popup__text--price').textContent =
+    advertisement.offer.price + '₽/ночь';
+  mapCard.querySelector('.popup__type').textContent =
+    buildingDescriptions[advertisement.offer.type];
+  mapCard.querySelector('.popup__text--capacity').textContent =
+    'Количество комнат: ' +
+    advertisement.offer.rooms +
+    ', количество гостей: ' +
+    advertisement.offer.guests;
+
+  mapCard.querySelector('.popup__text--time').textContent =
+    'Заезд после ' +
+    advertisement.offer.checkin +
+    ', выезд до ' +
+    advertisement.offer.checkout;
+
+  var popupFeaturesList = mapCard.querySelector('.popup__features');
+  var featureItems = popupFeaturesList.querySelectorAll('.popup__feature');
+  createFeaturesList(advertisement.offer.features, featureItems, popupFeaturesList);
+
+  mapCard.querySelector('.popup__description').textContent =
+    advertisement.offer.description;
+
+  var photoItemsContainer = mapCard.querySelector('.popup__photos');
+  createPhotosList(photoItemsContainer, mapCard, advertisement.offer.photos);
+
+  mapCard.querySelector('.popup__avatar').src = advertisement.author.avatar;
+
+  return mapCard;
+};
+
+// Скрывает не содержащиеся в списке удобства
+var createFeaturesList = function (features, featureItems, popupFeaturesList) {
+  var featureExistFlags = {};
+  var keys = [];
+
+  // Полный список удобств
+  for (var i = 0; i < featureItems.length; ++i) {
+    keys[i] = featureItems[i].classList[1].replace('popup__feature--', '');
+    featureExistFlags[keys[i]] = false;
+  }
+
+  // Выставляем true для списка доступных
+  for (var j = 0; j < features.length; ++j) {
+    featureExistFlags[features[j]] = true;
+  }
+
+  for (var k = 0; k < keys.length; ++k) {
+    if (!featureExistFlags[keys[k]]) {
+      popupFeaturesList.removeChild(featureItems[k]);
+    }
+  }
+};
+
+// формирует список доступных фото недвижимости
+var createPhotosList = function (photoItemsContainer, mapCard, photos) {
+  var photoItem = mapCard.querySelector('.popup__photo');
+  var fragment = document.createDocumentFragment();
+
+  var className;
+  var width;
+  var height;
+  var alternateText;
+
+  // Заполнение существующего и создание новых img
+  for (var i = 0; i < photos.length; ++i) {
+    if (i === 0) {
+      className = photoItem.className;
+      width = photoItem.width;
+      height = photoItem.height;
+      alternateText = photoItem.alt;
+
+      photoItem.src = photos[i];
+
+      continue;
+    }
+
+    var imageTag = document.createElement('img');
+
+    imageTag.src = photos[i];
+    imageTag.className = className;
+    imageTag.width = width;
+    imageTag.height = height;
+    imageTag.alt = alternateText;
+
+    fragment.appendChild(imageTag);
+  }
+
+  photoItemsContainer.appendChild(fragment);
+};
+
 activateMap();
 renderMapPins();
+
