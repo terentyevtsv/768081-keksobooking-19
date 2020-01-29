@@ -64,9 +64,6 @@ var MAX_ROOM_COUNT = 5;
 var MIN_GUEST_COUNT = 1;
 var MAX_GUEST_COUNT = 10;
 
-var PIN_WIDTH = 50;
-var PIN_HEIGHT = 70;
-
 var mapPinTemplate = document
     .querySelector('#pin')
     .content
@@ -83,7 +80,6 @@ var generateRandomAdvertisements = function () {
       author: {
         avatar: 'img/avatars/user0' + (i + 1) + '.png'
       },
-
       offer: {
         title: TITLES[i],
         price: getRandomInteger(MIN_PRICE, MAX_PRICE),
@@ -96,7 +92,6 @@ var generateRandomAdvertisements = function () {
         description: DESCRIPTIONS[i],
         photos: getRandomPhotos()
       },
-
       location: {
         x: getRandomInteger(0, mapSection.clientWidth),
         y: getRandomInteger(MIN_COORDINATE_Y, MAX_COORDINATE_Y)
@@ -175,8 +170,6 @@ var activateMap = function () {
 
 var renderMapPin = function (advertisement) {
   var mapPin = mapPinTemplate.cloneNode(true);
-  mapPin.style.left = (advertisement.location.x - 0.5 * PIN_WIDTH) + 'px';
-  mapPin.style.top = (advertisement.location.y - PIN_HEIGHT) + 'px';
 
   var icon = mapPin.querySelector('img');
   icon.src = advertisement.author.avatar;
@@ -193,7 +186,23 @@ var renderMapPins = function () {
     fragment.appendChild(mapPin);
   }
 
-  mapSection.querySelector('.map__pins').appendChild(fragment);
+  var mapPinsContainer = mapSection
+    .querySelector('.map__pins');
+  mapPinsContainer.appendChild(fragment);
+
+  var mapPins = mapPinsContainer.querySelectorAll('.map__pin');
+  if (mapPins.length > 1) {
+    // Если вставлены еще другие пины кроме главного
+    for (var j = 0; j < advertisements.length; ++j) {
+      var pinsHeight = mapPins[j + 1].offsetHeight;
+      var pinsWidth = mapPins[j + 1].offsetWidth;
+
+      mapPins[j + 1].style.left =
+        (advertisements[j].location.x - 0.5 * pinsWidth) + 'px';
+      mapPins[j + 1].style.top =
+        (advertisements[j].location.y - pinsHeight) + 'px';
+    }
+  }
 };
 
 activateMap();
