@@ -138,19 +138,16 @@ var getRandomArrayElements = function (array) {
   var arrayLength = getRandomInteger(1, array.length);
   var tmpItemWeights = [];
   for (var i = 0; i < array.length; ++i) {
-    var tmpItemWeight = {
+    tmpItemWeights[i] = {
       weight: Math.random(),
       arrayContent: array[i]
     };
-    tmpItemWeights[i] = tmpItemWeight;
   }
 
-  tmpItemWeights.sort(compareFunction);
+  tmpItemWeights.sort(function (a, b) {
+    return (a.weight - b.weight);
+  });
   return tmpItemWeights.slice(0, arrayLength);
-};
-
-var compareFunction = function (a, b) {
-  return (a.weight - b.weight);
 };
 
 // Функция возвращает случайный целый элемент в выбранном диапазоне значений
@@ -181,8 +178,7 @@ var renderMapPins = function () {
     fragment.appendChild(mapPin);
   }
 
-  var mapPinsContainer = mapSection
-    .querySelector('.map__pins');
+  var mapPinsContainer = mapSection.querySelector('.map__pins');
   mapPinsContainer.appendChild(fragment);
 
   var mapPins = mapPinsContainer.querySelectorAll('.map__pin');
