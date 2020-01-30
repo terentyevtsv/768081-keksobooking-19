@@ -262,8 +262,8 @@ var fillAdvertisementCard = function (advertisement) {
   }
 
   if (price !== null) {
-    price.textContent =
-      advertisement.offer.price + '₽/ночь';
+    price.innerHTML =
+      advertisement.offer.price + '&#x20bd;<span>/ночь</span>';
   }
 
   if (buildingType !== null) {
