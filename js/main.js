@@ -126,32 +126,9 @@ var getRandomPhotos = function () {
   // Случайное количество фото
   var photosCount = getRandomInteger(1, PHOTOS.length);
 
-  // Случайное фото
-  var randomPhoto = PHOTOS[getRandomInteger(0, PHOTOS.length - 1)];
-
   var photos = [];
 
-  // 1 фото
-  if (photosCount === 1) {
-    // Берем случайное фото
-    photos[0] = randomPhoto;
-    return photos;
-  }
-
-  // 2 фото
-  if (photosCount === 2) {
-    var j = 0;
-    for (var i = 0; i < PHOTOS.length; ++i) {
-      // Не берем случайное фото
-      if (PHOTOS[i] !== randomPhoto) {
-        photos[j++] = PHOTOS[i];
-      }
-    }
-    return photos;
-  }
-
-  // Берем все фото
-  for (var k = 0; k < PHOTOS.length; ++k) {
+  for (var k = 0; k < photosCount; ++k) {
     photos[k] = PHOTOS[k];
   }
 
@@ -192,15 +169,16 @@ var renderMapPins = function () {
 
   var mapPins = mapPinsContainer.querySelectorAll('.map__pin');
   if (mapPins.length > 1) {
-    // Если вставлены еще другие пины кроме главного
+    // Если вставлены еще другие пины кроме главного устанавливаем их координаты
     for (var j = 0; j < advertisements.length; ++j) {
-      var pinsHeight = mapPins[j + 1].offsetHeight;
-      var pinsWidth = mapPins[j + 1].offsetWidth;
-
+      // j + 1, потому что главный пин не учитывается, он уже отрисован
+      // Координаты пина это координаты его верхнего левого угла.
+      // Смещаем пин вдоль осей, чтобы координата острия пина совпала с координатой location
+      // Проводим эти операции после рендеринга, т.к. до этого размеры пинов неизвестны
       mapPins[j + 1].style.left =
-        (advertisements[j].location.x - 0.5 * pinsWidth) + 'px';
+        (advertisements[j].location.x - 0.5 * mapPins[j + 1].offsetWidth) + 'px';
       mapPins[j + 1].style.top =
-        (advertisements[j].location.y - pinsHeight) + 'px';
+        (advertisements[j].location.y - mapPins[j + 1].offsetHeight) + 'px';
     }
   }
 };
