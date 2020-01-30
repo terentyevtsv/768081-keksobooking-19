@@ -111,11 +111,11 @@ var generateRandomAdvertisements = function () {
 
 // Возвращает случайное количество неповторяющихся удобств
 var getRandomFeatures = function () {
-  // Случайная длина массива удобств
-  var featuresCount = getRandomInteger(1, FEATURES.length);
   var features = [];
-  for (var i = 0; i < featuresCount; ++i) {
-    features[i] = FEATURES[i];
+
+  var randomFeatures = getRandomArrayElements(FEATURES);
+  for (var i = 0; i < randomFeatures.length; ++i) {
+    features[i] = randomFeatures[i].arrayContent;
   }
 
   return features;
@@ -123,16 +123,34 @@ var getRandomFeatures = function () {
 
 // Возвращает случайное количество фото
 var getRandomPhotos = function () {
-  // Случайное количество фото
-  var photosCount = getRandomInteger(1, PHOTOS.length);
-
   var photos = [];
 
-  for (var k = 0; k < photosCount; ++k) {
-    photos[k] = PHOTOS[k];
+  var randomPhotos = getRandomArrayElements(PHOTOS);
+
+  for (var k = 0; k < randomPhotos.length; ++k) {
+    photos[k] = randomPhotos[k].arrayContent;
   }
 
   return photos;
+};
+
+var getRandomArrayElements = function (array) {
+  var arrayLength = getRandomInteger(1, array.length);
+  var tmpItemWeights = [];
+  for (var i = 0; i < array.length; ++i) {
+    var tmpItemWeight = {
+      weight: Math.random(),
+      arrayContent: array[i]
+    };
+    tmpItemWeights[i] = tmpItemWeight;
+  }
+
+  tmpItemWeights.sort(compareFunction);
+  return tmpItemWeights.slice(0, arrayLength);
+};
+
+var compareFunction = function (a, b) {
+  return (a.weight - b.weight);
 };
 
 // Функция возвращает случайный целый элемент в выбранном диапазоне значений
