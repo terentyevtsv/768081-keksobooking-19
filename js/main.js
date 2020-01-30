@@ -252,13 +252,11 @@ var fillAdvertisementCard = function (advertisement) {
 
   // Вставка значений в блоки
   if (title !== null) {
-    title.textContent =
-      advertisement.offer.title;
+    title.textContent = advertisement.offer.title;
   }
 
   if (address !== null) {
-    address.textContent =
-      advertisement.offer.address;
+    address.textContent = advertisement.offer.address;
   }
 
   if (price !== null) {
@@ -267,25 +265,18 @@ var fillAdvertisementCard = function (advertisement) {
   }
 
   if (buildingType !== null) {
-    buildingType.textContent =
-      buildingDescriptions[advertisement.offer.type];
+    buildingType.textContent = buildingDescriptions[advertisement.offer.type];
   }
 
   if (capacity !== null) {
     capacity.textContent = '';
 
     if (hasRooms) {
-      capacity.textContent +=
-        'Количество комнат: ' +
-        advertisement.offer.rooms +
-        '. ';
+      capacity.textContent += 'Количество комнат: ' + advertisement.offer.rooms + '. ';
     }
 
     if (hasGuests) {
-      capacity.textContent +=
-        'Количество гостей: ' +
-        advertisement.offer.guests +
-        '.';
+      capacity.textContent += 'Количество гостей: ' + advertisement.offer.guests + '.';
     }
   }
 
@@ -293,17 +284,11 @@ var fillAdvertisementCard = function (advertisement) {
     time.textContent = '';
 
     if (hasCheckin) {
-      time.textContent +=
-        'Заезд после ' +
-        advertisement.offer.checkin +
-        '. ';
+      time.textContent += 'Заезд после ' + advertisement.offer.checkin + '. ';
     }
 
     if (hasCheckout) {
-      time.textContent +=
-        'Выезд до ' +
-        advertisement.offer.checkout +
-        '.';
+      time.textContent += 'Выезд до ' + advertisement.offer.checkout + '.';
     }
   }
 
@@ -313,8 +298,7 @@ var fillAdvertisementCard = function (advertisement) {
   }
 
   if (description !== null) {
-    description.textContent =
-      advertisement.offer.description;
+    description.textContent = advertisement.offer.description;
   }
 
   if (photoItemsContainer !== null) {
