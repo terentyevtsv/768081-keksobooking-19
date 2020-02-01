@@ -185,13 +185,18 @@ var renderMapPin = function (advertisement) {
 var renderMapPins = function () {
   var advertisements = generateRandomAdvertisements();
   var fragment = document.createDocumentFragment();
+
+  var buildingDescriptions = {};
+  for (var k = 0; k < BUILDING_TYPES.length; ++k) {
+    buildingDescriptions[BUILDING_TYPES[k]] = BUILDING_DESCRIPTIONS[k];
+  }
+
+  var mapCard = fillAdvertisementCard(advertisements[0], buildingDescriptions);
+  var mapFiltersContainer = mapSection
+    .querySelector('.map__filters-container');
+  mapSection.insertBefore(mapCard, mapFiltersContainer);
+
   for (var i = 0; i < advertisements.length; ++i) {
-    if (i === 0) {
-      var mapCard = fillAdvertisementCard(advertisements[i]);
-      var mapFiltersContainer = mapSection
-        .querySelector('.map__filters-container');
-      mapSection.insertBefore(mapCard, mapFiltersContainer);
-    }
     var mapPin = renderMapPin(advertisements[i]);
     fragment.appendChild(mapPin);
   }
@@ -215,13 +220,8 @@ var renderMapPins = function () {
   }
 };
 
-var fillAdvertisementCard = function (advertisement) {
+var fillAdvertisementCard = function (advertisement, buildingDescriptions) {
   var mapCard = mapCardTemplate.cloneNode(true);
-
-  var buildingDescriptions = {};
-  for (var i = 0; i < BUILDING_TYPES.length; ++i) {
-    buildingDescriptions[BUILDING_TYPES[i]] = BUILDING_DESCRIPTIONS[i];
-  }
 
   // Получение блоков для вставки значений
   var title = getInformationField(mapCard, '.popup__title', advertisement.offer, 'title');
@@ -358,24 +358,14 @@ var createPhotosList = function (photoItemsContainer, mapCard, photos) {
   var photoItem = mapCard.querySelector('.popup__photo');
   var fragment = document.createDocumentFragment();
 
-  var className;
-  var width;
-  var height;
-  var alternateText;
-
   // Заполнение существующего и создание новых img
-  for (var i = 0; i < photos.length; ++i) {
-    if (i === 0) {
-      className = photoItem.className;
-      width = photoItem.width;
-      height = photoItem.height;
-      alternateText = photoItem.alt;
+  var className = photoItem.className;
+  var width = photoItem.width;
+  var height = photoItem.height;
+  var alternateText = photoItem.alt;
 
-      photoItem.src = photos[i];
-
-      continue;
-    }
-
+  photoItem.src = photos[0];
+  for (var i = 1; i < photos.length; ++i) {
     var imageTag = document.createElement('img');
 
     imageTag.src = photos[i];
