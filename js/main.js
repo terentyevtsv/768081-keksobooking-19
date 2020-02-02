@@ -20,12 +20,12 @@ var BUILDING_TYPES = [
   'bungalo'
 ];
 
-var BUILDING_DESCRIPTIONS = [
+/* var BUILDING_DESCRIPTIONS = [
   'Дворец',
   'Квартира',
   'Дом',
   'Бунгало',
-];
+]; */
 
 var CHECKIN_CHECKOUT_TIMES = [
   '12:00',
@@ -78,10 +78,10 @@ var mapPinTemplate = document
 
 var mapSection = document.querySelector('.map');
 
-var mapCardTemplate = document
+/* var mapCardTemplate = document
   .querySelector('#card')
   .content
-  .querySelector('.map__card');
+  .querySelector('.map__card'); */
 
 // Генератор случайных объявлений
 var generateRandomAdvertisements = function () {
@@ -169,7 +169,7 @@ var getRandomInteger = function (min, max) {
 };
 
 var activateMap = function () {
-  mapSection.classList.remove('map--faded');
+  renderMapPins();
 };
 
 var renderMapPin = function (advertisement) {
@@ -186,6 +186,7 @@ var renderMapPins = function () {
   var advertisements = generateRandomAdvertisements();
   var fragment = document.createDocumentFragment();
 
+  /*
   var buildingDescriptions = {};
   for (var k = 0; k < BUILDING_TYPES.length; ++k) {
     buildingDescriptions[BUILDING_TYPES[k]] = BUILDING_DESCRIPTIONS[k];
@@ -194,7 +195,7 @@ var renderMapPins = function () {
   var mapCard = fillAdvertisementCard(advertisements[0], buildingDescriptions);
   var mapFiltersContainer = mapSection
     .querySelector('.map__filters-container');
-  mapSection.insertBefore(mapCard, mapFiltersContainer);
+  mapSection.insertBefore(mapCard, mapFiltersContainer); */
 
   for (var i = 0; i < advertisements.length; ++i) {
     var mapPin = renderMapPin(advertisements[i]);
@@ -220,7 +221,7 @@ var renderMapPins = function () {
   }
 };
 
-var fillAdvertisementCard = function (advertisement, buildingDescriptions) {
+/* var fillAdvertisementCard = function (advertisement, buildingDescriptions) {
   var mapCard = mapCardTemplate.cloneNode(true);
 
   // Получение блоков для вставки значений
@@ -378,8 +379,29 @@ var createPhotosList = function (photoItemsContainer, mapCard, photos) {
   }
 
   photoItemsContainer.appendChild(fragment);
+}; */
+
+var disableForms = function () {
+  // Блокирование формы объявления
+  var adForm = document.querySelector('.notice .ad-form');
+  var adFormHeader = adForm.querySelector('.ad-form-header');
+  var adFormElements = adForm.querySelectorAll('.ad-form__element');
+
+  adFormHeader.setAttribute('disabled', 'disabled');
+  for (var i = 0; i < adFormElements.length; ++i) {
+    adFormElements[i].setAttribute('disabled', 'disabled');
+  }
+
+  // Блокирование формы фильтров
+  var mapSelectFilters = mapSection.querySelectorAll('.map__filters .map__filter');
+  for (var j = 0; j < mapSelectFilters.length; ++j) {
+    mapSelectFilters[j].setAttribute('disabled', 'disabled');
+  }
+
+  var mapCheckFilter = mapSection.querySelector('.map__filters .map__features');
+  mapCheckFilter.setAttribute('disabled', 'disabled');
 };
 
+disableForms();
 activateMap();
-renderMapPins();
 
