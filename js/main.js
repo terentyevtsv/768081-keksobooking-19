@@ -175,7 +175,7 @@ var getRandomInteger = function (min, max) {
   return Math.floor(min + Math.random() * (max + 1 - min));
 };
 
-var advertisementMapPins = new Map();
+var advertisementMapPins = [];
 var activateMap = function () {
   renderMapPins();
 
@@ -187,21 +187,21 @@ var activateMap = function () {
 
 var onMapPinsContainerClick = function (evt) {
   if (evt.target.matches('.map__pin')) {
-    if (advertisementMapPins.has(evt.target)) {
-      var mapCard = fillAdvertisementCard(advertisementMapPins.get(evt.target));
-      var mapFiltersContainer = mapSection
+    var advertisement = advertisementMapPins[evt.target.getAttribute('data-adv-id')];
+    var mapCard = fillAdvertisementCard(advertisement);
+    var mapFiltersContainer = mapSection
         .querySelector('.map__filters-container');
-      mapSection.insertBefore(mapCard, mapFiltersContainer);
+    mapSection.insertBefore(mapCard, mapFiltersContainer);
 
-      document.addEventListener('keydown', onDialogEscPress);
+    document.addEventListener('keydown', onDialogEscPress);
 
-      var popupClose = mapCard.querySelector('.popup__close');
-      popupClose.addEventListener('click', function () {
-        closeMapCard();
-      });
-    }
+    var popupClose = mapCard.querySelector('.popup__close');
+    popupClose.addEventListener('click', function () {
+      closeMapCard();
+    });
   }
 };
+
 
 var onDialogEscPress = function (evt) {
   if (evt.key === ESCAPE_KEY) {
@@ -245,7 +245,6 @@ var renderMapPins = function () {
 
   var mapPins = mapPinsContainer.querySelectorAll('.map__pin');
 
-  advertisementMapPins.clear();
   if (mapPins.length > 1) {
     // Если вставлены еще другие пины кроме главного устанавливаем их координаты
     for (var j = 0; j < advertisements.length; ++j) {
@@ -258,7 +257,8 @@ var renderMapPins = function () {
       mapPins[j + 1].style.top =
         (advertisements[j].location.y - mapPins[j + 1].offsetHeight) + 'px';
 
-      advertisementMapPins.set(mapPins[j + 1], advertisements[j]);
+      mapPins[j + 1].setAttribute('data-adv-id', j);
+      advertisementMapPins[j] = advertisements[j];
     }
   }
 };
