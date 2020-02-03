@@ -429,7 +429,7 @@ var fillAddress = function (isActivate) {
   var height = mainMapPin.offsetHeight;
 
   var pinHeight = parseInt(window.getComputedStyle(mainMapPin, ':after')
-    .height.replace('px', ''), 10);
+    .height, 10);
 
   var positionX = mainMapPin.offsetLeft + 0.5 * width;
 
@@ -442,6 +442,16 @@ var fillAddress = function (isActivate) {
   // отображение адреса после активации
   address.value = positionX + '; ' + (mainMapPin.offsetTop + height + pinHeight);
 };
+
+var roomNumberSelector = document.querySelector('#room_number');
+roomNumberSelector.addEventListener('change', function () {
+  makeGuestRoomsValidation(roomNumberSelector, guestNumberSelector);
+});
+
+var guestNumberSelector = document.querySelector('#capacity');
+guestNumberSelector.addEventListener('change', function () {
+  makeGuestRoomsValidation(roomNumberSelector, guestNumberSelector);
+});
 
 var enableForms = function () {
   // Блокирование формы объявления
@@ -457,8 +467,40 @@ var enableForms = function () {
   }
 
   mapSection.classList.remove('map--faded');
+
+  makeGuestRoomsValidation(roomNumberSelector, guestNumberSelector);
+};
+
+var makeGuestRoomsValidation = function (roomSelector, guestSelector) {
+  var roomNumber = parseInt(roomNumberSelector
+    .options[roomNumberSelector.selectedIndex]
+    .value, 10);
+  var guestNumber = parseInt(guestNumberSelector
+    .options[guestNumberSelector.selectedIndex]
+    .value, 10);
+  var message = '';
+
+  switch (roomNumber) {
+    case 1:
+    case 2:
+    case 3:
+      if (guestNumber > roomNumber || guestNumber === 0) {
+        message = 'В ' + roomNumber + '-комнатный номер количество гостей не более ' +
+          roomNumber + ' и не менее 1';
+      }
+      break;
+
+    case 100:
+      if (guestNumber !== 0) {
+        message = '100-комнатный номер не для гостей';
+      }
+  }
+
+  roomSelector.setCustomValidity(message);
+  guestSelector.setCustomValidity(message);
 };
 
 disableForms();
 fillAddress(false);
+makeGuestRoomsValidation(roomNumberSelector, guestNumberSelector);
 
