@@ -74,6 +74,7 @@ var MAX_GUEST_COUNT = 10;
 var LEFT_MOUSE_BUTTON = 0;
 
 var ENTER_KEY = 'Enter';
+var ESCAPE_KEY = 'Escape';
 
 var mapPinTemplate = document
     .querySelector('#pin')
@@ -86,6 +87,8 @@ var mapCardTemplate = document
   .querySelector('#card')
   .content
   .querySelector('.map__card');
+
+var mapPinsContainer = mapSection.querySelector('.map__pins');
 
 // Генератор случайных объявлений
 var generateRandomAdvertisements = function () {
@@ -172,11 +175,45 @@ var getRandomInteger = function (min, max) {
   return Math.floor(min + Math.random() * (max + 1 - min));
 };
 
+var advertisementMapPins = new Map();
 var activateMap = function () {
   renderMapPins();
-  enableForms();
 
+  enableForms();
   fillAddress(true);
+
+  mapPinsContainer.addEventListener('click', onMapPinsContainerClick);
+};
+
+var onMapPinsContainerClick = function (evt) {
+  if (evt.target.matches('.map__pin')) {
+    if (advertisementMapPins.has(evt.target)) {
+      var mapCard = fillAdvertisementCard(advertisementMapPins.get(evt.target));
+      var mapFiltersContainer = mapSection
+        .querySelector('.map__filters-container');
+      mapSection.insertBefore(mapCard, mapFiltersContainer);
+
+      document.addEventListener('keydown', onDialogEscPress);
+
+      var popupClose = mapCard.querySelector('.popup__close');
+      popupClose.addEventListener('click', function () {
+        closeMapCard();
+      });
+    }
+  }
+};
+
+var onDialogEscPress = function (evt) {
+  if (evt.key === ESCAPE_KEY) {
+    closeMapCard();
+  }
+};
+
+// Закрытие карточки
+var closeMapCard = function () {
+  var mapCard = mapSection.querySelector('.map__card');
+  mapSection.removeChild(mapCard);
+  document.removeEventListener('keydown', onDialogEscPress);
 };
 
 var renderMapPin = function (advertisement) {
@@ -189,29 +226,26 @@ var renderMapPin = function (advertisement) {
   return mapPin;
 };
 
+var buildingDescriptions = {};
+
 var renderMapPins = function () {
   var advertisements = generateRandomAdvertisements();
   var fragment = document.createDocumentFragment();
 
-  var buildingDescriptions = {};
   for (var k = 0; k < BUILDING_TYPES.length; ++k) {
     buildingDescriptions[BUILDING_TYPES[k]] = BUILDING_DESCRIPTIONS[k];
   }
-
-  var mapCard = fillAdvertisementCard(advertisements[0], buildingDescriptions);
-  var mapFiltersContainer = mapSection
-    .querySelector('.map__filters-container');
-  mapSection.insertBefore(mapCard, mapFiltersContainer);
 
   for (var i = 0; i < advertisements.length; ++i) {
     var mapPin = renderMapPin(advertisements[i]);
     fragment.appendChild(mapPin);
   }
 
-  var mapPinsContainer = mapSection.querySelector('.map__pins');
   mapPinsContainer.appendChild(fragment);
 
   var mapPins = mapPinsContainer.querySelectorAll('.map__pin');
+
+  advertisementMapPins.clear();
   if (mapPins.length > 1) {
     // Если вставлены еще другие пины кроме главного устанавливаем их координаты
     for (var j = 0; j < advertisements.length; ++j) {
@@ -223,11 +257,13 @@ var renderMapPins = function () {
         (advertisements[j].location.x - 0.5 * mapPins[j + 1].offsetWidth) + 'px';
       mapPins[j + 1].style.top =
         (advertisements[j].location.y - mapPins[j + 1].offsetHeight) + 'px';
+
+      advertisementMapPins.set(mapPins[j + 1], advertisements[j]);
     }
   }
 };
 
-var fillAdvertisementCard = function (advertisement, buildingDescriptions) {
+var fillAdvertisementCard = function (advertisement) {
   var mapCard = mapCardTemplate.cloneNode(true);
 
   // Получение блоков для вставки значений
