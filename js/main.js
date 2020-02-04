@@ -187,18 +187,21 @@ var activateMap = function () {
 
 var onMapPinsContainerClick = function (evt) {
   if (evt.target.matches('.map__pin')) {
-    var advertisement = advertisementMapPins[evt.target.getAttribute('data-adv-id')];
-    var mapCard = fillAdvertisementCard(advertisement);
-    var mapFiltersContainer = mapSection
-        .querySelector('.map__filters-container');
-    mapSection.insertBefore(mapCard, mapFiltersContainer);
+    var index = evt.target.getAttribute('data-adv-id');
+    if (index !== null) {
+      var advertisement = advertisementMapPins[index];
+      var mapCard = fillAdvertisementCard(advertisement);
+      var mapFiltersContainer = mapSection
+          .querySelector('.map__filters-container');
+      mapSection.insertBefore(mapCard, mapFiltersContainer);
 
-    document.addEventListener('keydown', onDialogEscPress);
+      document.addEventListener('keydown', onDialogEscPress);
 
-    var popupClose = mapCard.querySelector('.popup__close');
-    popupClose.addEventListener('click', function () {
-      closeMapCard();
-    });
+      var popupClose = mapCard.querySelector('.popup__close');
+      popupClose.addEventListener('click', function () {
+        closeMapCard();
+      });
+    }
   }
 };
 
