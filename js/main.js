@@ -427,9 +427,7 @@ var fillAddress = function (isActivate) {
 
   var width = mainMapPin.offsetWidth;
   var height = mainMapPin.offsetHeight;
-
-  var pinHeight = parseInt(window.getComputedStyle(mainMapPin, ':after')
-    .height, 10);
+  var pinHeight = parseInt(window.getComputedStyle(mainMapPin, ':after').height, 10);
 
   var positionX = mainMapPin.offsetLeft + 0.5 * width;
 
@@ -472,9 +470,10 @@ var enableForms = function () {
 };
 
 var makeGuestRoomsValidation = function (roomSelector, guestSelector) {
-  var roomNumber = parseInt(roomNumberSelector
-    .options[roomNumberSelector.selectedIndex]
-    .value, 10);
+  var roomNumber = parseInt(
+      roomNumberSelector.options[roomNumberSelector.selectedIndex].value,
+      10
+  );
   var guestNumber = parseInt(guestNumberSelector
     .options[guestNumberSelector.selectedIndex]
     .value, 10);
