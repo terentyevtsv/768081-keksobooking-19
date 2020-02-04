@@ -186,8 +186,12 @@ var activateMap = function () {
 };
 
 var onMapPinsContainerClick = function (evt) {
-  if (evt.target.matches('.map__pin')) {
+  var targetMapPin = evt.target.closest('button');
+  if (evt.target.matches('.map__pin') || targetMapPin) {
     var index = evt.target.getAttribute('data-adv-id');
+    if (index === null) {
+      index = targetMapPin.getAttribute('data-adv-id');
+    }
     if (index !== null) {
       // Пин точно не главный, т.к. у него нет индекса объявления
 
