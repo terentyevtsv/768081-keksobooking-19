@@ -189,6 +189,14 @@ var onMapPinsContainerClick = function (evt) {
   if (evt.target.matches('.map__pin')) {
     var index = evt.target.getAttribute('data-adv-id');
     if (index !== null) {
+      // Пин точно не главный, т.к. у него нет индекса объявления
+
+      // Если есть открытая карточка то сначала закрываем её
+      var currentMapCard = mapSection.querySelector('.map__card');
+      if (currentMapCard !== null) {
+        mapSection.removeChild(currentMapCard);
+      }
+
       var advertisement = advertisementMapPins[index];
       var mapCard = fillAdvertisementCard(advertisement);
       var mapFiltersContainer = mapSection
