@@ -181,38 +181,7 @@ var activateMap = function () {
 
   enableForms();
   fillAddress(true);
-
-  mapPinsContainer.addEventListener('click', onMapPinsContainerClick);
 };
-
-var onMapPinsContainerClick = function (evt) {
-  if (evt.target.matches('.map__pin')) {
-    var index = evt.target.getAttribute('data-adv-id');
-    if (index !== null) {
-      // Пин точно не главный, т.к. у него нет индекса объявления
-
-      // Если есть открытая карточка то сначала закрываем её
-      var currentMapCard = mapSection.querySelector('.map__card');
-      if (currentMapCard !== null) {
-        mapSection.removeChild(currentMapCard);
-      }
-
-      var advertisement = advertisementMapPins[index];
-      var mapCard = fillAdvertisementCard(advertisement);
-      var mapFiltersContainer = mapSection
-          .querySelector('.map__filters-container');
-      mapSection.insertBefore(mapCard, mapFiltersContainer);
-
-      document.addEventListener('keydown', onDialogEscPress);
-
-      var popupClose = mapCard.querySelector('.popup__close');
-      popupClose.addEventListener('click', function () {
-        closeMapCard();
-      });
-    }
-  }
-};
-
 
 var onDialogEscPress = function (evt) {
   if (evt.key === ESCAPE_KEY) {
@@ -462,6 +431,35 @@ mainMapPin.addEventListener('mousedown', function (evt) {
   }
 });
 
+mapPinsContainer.addEventListener('click', onMapPinsContainerClick);
+var onMapPinsContainerClick = function (evt) {
+  if (evt.target.matches('.map__pin')) {
+    var index = evt.target.getAttribute('data-adv-id');
+    if (index !== null) {
+      // Пин точно не главный, т.к. у него нет индекса объявления
+
+      // Если есть открытая карточка то сначала закрываем её
+      var currentMapCard = mapSection.querySelector('.map__card');
+      if (currentMapCard !== null) {
+        mapSection.removeChild(currentMapCard);
+      }
+
+      var advertisement = advertisementMapPins[index];
+      var mapCard = fillAdvertisementCard(advertisement);
+      var mapFiltersContainer = mapSection
+          .querySelector('.map__filters-container');
+      mapSection.insertBefore(mapCard, mapFiltersContainer);
+
+      document.addEventListener('keydown', onDialogEscPress);
+
+      var popupClose = mapCard.querySelector('.popup__close');
+      popupClose.addEventListener('click', function () {
+        closeMapCard();
+      });
+    }
+  }
+};
+
 mainMapPin.addEventListener('keydown', function (evt) {
   if (evt.key === ENTER_KEY) {
     activateMap();
@@ -545,7 +543,61 @@ var makeGuestRoomsValidation = function (roomSelector, guestSelector) {
   guestSelector.setCustomValidity(message);
 };
 
+var buildingTypeSelector = document.querySelector('#type');
+buildingTypeSelector.addEventListener('change', function () {
+  makeTypeMinPriceValidation();
+});
+
+var priceField = document.querySelector('#price');
+priceField.addEventListener('change', function () {
+  makeTypeMinPriceValidation();
+});
+
+var makeTypeMinPriceValidation = function () {
+  var typeValue = buildingTypeSelector.options[buildingTypeSelector.selectedIndex].value;
+
+  var minPrice;
+  switch (typeValue) {
+    // Бунгало
+    case BUILDING_TYPES[3]:
+      minPrice = 0;
+      break;
+
+    // Квартира
+    case BUILDING_TYPES[1]:
+      minPrice = 1000;
+      break;
+
+    // Дом
+    case BUILDING_TYPES[2]:
+      minPrice = 5000;
+      break;
+
+    // Дворец
+    case BUILDING_TYPES[0]:
+      minPrice = 10000;
+      break;
+  }
+
+  priceField.placeholder = minPrice;
+  priceField.min = minPrice;
+};
+
+var timeinSelector = document.querySelector('#timein');
+timeinSelector.addEventListener('change', function () {
+  makeTimeinTimeoutValidation(timeinSelector, timeoutSelector);
+});
+var timeoutSelector = document.querySelector('#timeout');
+timeoutSelector.addEventListener('change', function () {
+  makeTimeinTimeoutValidation(timeoutSelector, timeinSelector);
+});
+
+var makeTimeinTimeoutValidation = function (activeSelector, passiveSelector) {
+  passiveSelector.selectedIndex = activeSelector.selectedIndex;
+};
+
 disableForms();
 fillAddress(false);
 makeGuestRoomsValidation(roomNumberSelector, guestNumberSelector);
+makeTypeMinPriceValidation();
 
