@@ -90,6 +90,53 @@ var mapCardTemplate = document
 
 var mapPinsContainer = mapSection.querySelector('.map__pins');
 
+// Функция возвращает случайный целый элемент в выбранном диапазоне значений
+var getRandomInteger = function (min, max) {
+  // случайное число от min до (max+1)
+  return Math.floor(min + Math.random() * (max + 1 - min));
+};
+
+var getRandomArrayElements = function (array) {
+  var arrayLength = getRandomInteger(1, array.length);
+  var tmpItemWeights = [];
+  for (var i = 0; i < array.length; ++i) {
+    tmpItemWeights[i] = {
+      weight: Math.random(),
+      arrayContent: array[i]
+    };
+  }
+
+  tmpItemWeights.sort(function (a, b) {
+    return (a.weight - b.weight);
+  });
+  return tmpItemWeights.slice(0, arrayLength);
+};
+
+// Возвращает случайное количество неповторяющихся удобств
+var getRandomFeatures = function () {
+  var features = [];
+
+  var randomFeatures = getRandomArrayElements(FEATURES);
+  for (var i = 0; i < randomFeatures.length; ++i) {
+    features[i] = randomFeatures[i].arrayContent;
+  }
+
+  return features;
+};
+
+// Возвращает случайное количество фото
+var getRandomPhotos = function () {
+  var photos = [];
+
+  var randomPhotos = getRandomArrayElements(PHOTOS);
+
+  for (var k = 0; k < randomPhotos.length; ++k) {
+    photos[k] = randomPhotos[k].arrayContent;
+  }
+
+  return photos;
+};
+
 // Генератор случайных объявлений
 var generateRandomAdvertisements = function () {
   var advertisements = [];
@@ -128,108 +175,6 @@ var generateRandomAdvertisements = function () {
   return advertisements;
 };
 
-// Возвращает случайное количество неповторяющихся удобств
-var getRandomFeatures = function () {
-  var features = [];
-
-  var randomFeatures = getRandomArrayElements(FEATURES);
-  for (var i = 0; i < randomFeatures.length; ++i) {
-    features[i] = randomFeatures[i].arrayContent;
-  }
-
-  return features;
-};
-
-// Возвращает случайное количество фото
-var getRandomPhotos = function () {
-  var photos = [];
-
-  var randomPhotos = getRandomArrayElements(PHOTOS);
-
-  for (var k = 0; k < randomPhotos.length; ++k) {
-    photos[k] = randomPhotos[k].arrayContent;
-  }
-
-  return photos;
-};
-
-var getRandomArrayElements = function (array) {
-  var arrayLength = getRandomInteger(1, array.length);
-  var tmpItemWeights = [];
-  for (var i = 0; i < array.length; ++i) {
-    tmpItemWeights[i] = {
-      weight: Math.random(),
-      arrayContent: array[i]
-    };
-  }
-
-  tmpItemWeights.sort(function (a, b) {
-    return (a.weight - b.weight);
-  });
-  return tmpItemWeights.slice(0, arrayLength);
-};
-
-// Функция возвращает случайный целый элемент в выбранном диапазоне значений
-var getRandomInteger = function (min, max) {
-  // случайное число от min до (max+1)
-  return Math.floor(min + Math.random() * (max + 1 - min));
-};
-
-var advertisementMapPins = [];
-var activateMap = function () {
-  renderMapPins();
-
-  enableForms();
-  fillAddress(true);
-
-  mapPinsContainer.addEventListener('click', onMapPinsContainerClick);
-};
-
-var onMapPinsContainerClick = function (evt) {
-  var targetMapPin = evt.target.closest('button');
-  if (evt.target.matches('.map__pin') || targetMapPin) {
-    var index = evt.target.getAttribute('data-adv-id');
-    if (index === null) {
-      index = targetMapPin.getAttribute('data-adv-id');
-    }
-    if (index !== null) {
-      // Пин точно не главный, т.к. у него нет индекса объявления
-
-      // Если есть открытая карточка то сначала закрываем её
-      var currentMapCard = mapSection.querySelector('.map__card');
-      if (currentMapCard !== null) {
-        mapSection.removeChild(currentMapCard);
-      }
-
-      var advertisement = advertisementMapPins[index];
-      var mapCard = fillAdvertisementCard(advertisement);
-      var mapFiltersContainer = mapSection
-          .querySelector('.map__filters-container');
-      mapSection.insertBefore(mapCard, mapFiltersContainer);
-
-      document.addEventListener('keydown', onDialogEscPress);
-
-      var popupClose = mapCard.querySelector('.popup__close');
-      popupClose.addEventListener('click', function () {
-        closeMapCard();
-      });
-    }
-  }
-};
-
-var onDialogEscPress = function (evt) {
-  if (evt.key === ESCAPE_KEY) {
-    closeMapCard();
-  }
-};
-
-// Закрытие карточки
-var closeMapCard = function () {
-  var mapCard = mapSection.querySelector('.map__card');
-  mapSection.removeChild(mapCard);
-  document.removeEventListener('keydown', onDialogEscPress);
-};
-
 var renderMapPin = function (advertisement) {
   var mapPin = mapPinTemplate.cloneNode(true);
 
@@ -239,8 +184,6 @@ var renderMapPin = function (advertisement) {
 
   return mapPin;
 };
-
-var buildingDescriptions = {};
 
 var renderMapPins = function () {
   var advertisements = generateRandomAdvertisements();
@@ -273,6 +216,59 @@ var renderMapPins = function () {
 
       mapPins[j + 1].setAttribute('data-adv-id', j);
       advertisementMapPins[j] = advertisements[j];
+    }
+  }
+};
+
+// Закрытие карточки
+var closeMapCard = function () {
+  var mapCard = mapSection.querySelector('.map__card');
+  mapSection.removeChild(mapCard);
+  document.removeEventListener('keydown', onDialogEscPress);
+};
+
+var onDialogEscPress = function (evt) {
+  if (evt.key === ESCAPE_KEY) {
+    closeMapCard();
+  }
+};
+
+// Возвращает DOM элемент если блок не скрыт
+var getInformationField = function (
+    mapCard,
+    cssClass,
+    parentObject,
+    currentProperty
+) {
+  var item = mapCard.querySelector(cssClass);
+
+  if (!parentObject.hasOwnProperty(currentProperty)) {
+    item.classList.add('hidden');
+    return null;
+  }
+
+  return item;
+};
+
+// Скрывает не содержащиеся в списке удобства
+var createFeaturesList = function (features, featureItems, popupFeaturesList) {
+  var featureExistFlags = {};
+  var keys = [];
+
+  // Полный список удобств
+  for (var i = 0; i < featureItems.length; ++i) {
+    keys[i] = featureItems[i].classList[1].replace('popup__feature--', '');
+    featureExistFlags[keys[i]] = false;
+  }
+
+  // Выставляем true для списка доступных
+  for (var j = 0; j < features.length; ++j) {
+    featureExistFlags[features[j]] = true;
+  }
+
+  for (var k = 0; k < keys.length; ++k) {
+    if (!featureExistFlags[keys[k]]) {
+      popupFeaturesList.removeChild(featureItems[k]);
     }
   }
 };
@@ -370,45 +366,49 @@ var fillAdvertisementCard = function (advertisement) {
   return mapCard;
 };
 
-// Возвращает DOM элемент если блок не скрыт
-var getInformationField = function (
-    mapCard,
-    cssClass,
-    parentObject,
-    currentProperty
-) {
-  var item = mapCard.querySelector(cssClass);
+var onMapPinsContainerClick = function (evt) {
+  var targetMapPin = evt.target.closest('button');
+  if (evt.target.matches('.map__pin') || targetMapPin) {
+    var index = evt.target.getAttribute('data-adv-id');
+    if (index === null) {
+      index = targetMapPin.getAttribute('data-adv-id');
+    }
+    if (index !== null) {
+      // Пин точно не главный, т.к. у него нет индекса объявления
 
-  if (!parentObject.hasOwnProperty(currentProperty)) {
-    item.classList.add('hidden');
-    return null;
-  }
+      // Если есть открытая карточка то сначала закрываем её
+      var currentMapCard = mapSection.querySelector('.map__card');
+      if (currentMapCard !== null) {
+        mapSection.removeChild(currentMapCard);
+      }
 
-  return item;
-};
+      var advertisement = advertisementMapPins[index];
+      var mapCard = fillAdvertisementCard(advertisement);
+      var mapFiltersContainer = mapSection
+          .querySelector('.map__filters-container');
+      mapSection.insertBefore(mapCard, mapFiltersContainer);
 
-// Скрывает не содержащиеся в списке удобства
-var createFeaturesList = function (features, featureItems, popupFeaturesList) {
-  var featureExistFlags = {};
-  var keys = [];
+      document.addEventListener('keydown', onDialogEscPress);
 
-  // Полный список удобств
-  for (var i = 0; i < featureItems.length; ++i) {
-    keys[i] = featureItems[i].classList[1].replace('popup__feature--', '');
-    featureExistFlags[keys[i]] = false;
-  }
-
-  // Выставляем true для списка доступных
-  for (var j = 0; j < features.length; ++j) {
-    featureExistFlags[features[j]] = true;
-  }
-
-  for (var k = 0; k < keys.length; ++k) {
-    if (!featureExistFlags[keys[k]]) {
-      popupFeaturesList.removeChild(featureItems[k]);
+      var popupClose = mapCard.querySelector('.popup__close');
+      popupClose.addEventListener('click', function () {
+        closeMapCard();
+      });
     }
   }
 };
+
+var advertisementMapPins = [];
+var activateMap = function () {
+  renderMapPins();
+
+  enableForms();
+  fillAddress(true);
+
+  mapPinsContainer.addEventListener('click', onMapPinsContainerClick);
+};
+
+var buildingDescriptions = {};
 
 // формирует список доступных фото недвижимости
 var createPhotosList = function (photoItemsContainer, mapCard, photos) {
