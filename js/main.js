@@ -273,6 +273,33 @@ var createFeaturesList = function (features, featureItems, popupFeaturesList) {
   }
 };
 
+// формирует список доступных фото недвижимости
+var createPhotosList = function (photoItemsContainer, mapCard, photos) {
+  var photoItem = mapCard.querySelector('.popup__photo');
+  var fragment = document.createDocumentFragment();
+
+  // Заполнение существующего и создание новых img
+  var className = photoItem.className;
+  var width = photoItem.width;
+  var height = photoItem.height;
+  var alternateText = photoItem.alt;
+
+  photoItem.src = photos[0];
+  for (var i = 1; i < photos.length; ++i) {
+    var imageTag = document.createElement('img');
+
+    imageTag.src = photos[i];
+    imageTag.className = className;
+    imageTag.width = width;
+    imageTag.height = height;
+    imageTag.alt = alternateText;
+
+    fragment.appendChild(imageTag);
+  }
+
+  photoItemsContainer.appendChild(fragment);
+};
+
 var fillAdvertisementCard = function (advertisement) {
   var mapCard = mapCardTemplate.cloneNode(true);
 
@@ -398,6 +425,73 @@ var onMapPinsContainerClick = function (evt) {
   }
 };
 
+var fillAddress = function (isActivate) {
+  var address = adForm.querySelector('#address');
+
+  var width = mainMapPin.offsetWidth;
+  var height = mainMapPin.offsetHeight;
+  var pinHeight = parseInt(window.getComputedStyle(mainMapPin, ':after').height, 10);
+
+  var positionX = mainMapPin.offsetLeft + 0.5 * width;
+
+  if (!isActivate) {
+    // отображение адреса до активации
+    address.value = positionX + '; ' + (mainMapPin.offsetTop + 0.5 * height);
+    return;
+  }
+
+  // отображение адреса после активации
+  address.value = positionX + '; ' + (mainMapPin.offsetTop + height + pinHeight);
+};
+
+var makeGuestRoomsValidation = function (roomSelector, guestSelector) {
+  var roomNumber = parseInt(
+      roomNumberSelector.options[roomNumberSelector.selectedIndex].value,
+      10
+  );
+  var guestNumber = parseInt(guestNumberSelector
+    .options[guestNumberSelector.selectedIndex]
+    .value, 10);
+  var message = '';
+
+  switch (roomNumber) {
+    case 1:
+    case 2:
+    case 3:
+      if (guestNumber > roomNumber || guestNumber === 0) {
+        message = 'В ' + roomNumber + '-комнатный номер количество гостей не более ' +
+          roomNumber + ' и не менее 1';
+      }
+      break;
+
+    case 100:
+      if (guestNumber !== 0) {
+        message = '100-комнатный номер не для гостей';
+      }
+  }
+
+  roomSelector.setCustomValidity(message);
+  guestSelector.setCustomValidity(message);
+};
+
+var enableForms = function () {
+  // Блокирование формы объявления
+  adFormHeader.removeAttribute('disabled');
+  for (var i = 0; i < adFormElements.length; ++i) {
+    adFormElements[i].removeAttribute('disabled');
+  }
+
+  // Блокирование формы фильтров
+  mapCheckFilter.removeAttribute('disabled');
+  for (var j = 0; j < mapSelectFilters.length; ++j) {
+    mapSelectFilters[j].removeAttribute('disabled');
+  }
+
+  mapSection.classList.remove('map--faded');
+
+  makeGuestRoomsValidation(roomNumberSelector, guestNumberSelector);
+};
+
 var advertisementMapPins = [];
 var activateMap = function () {
   renderMapPins();
@@ -409,33 +503,6 @@ var activateMap = function () {
 };
 
 var buildingDescriptions = {};
-
-// формирует список доступных фото недвижимости
-var createPhotosList = function (photoItemsContainer, mapCard, photos) {
-  var photoItem = mapCard.querySelector('.popup__photo');
-  var fragment = document.createDocumentFragment();
-
-  // Заполнение существующего и создание новых img
-  var className = photoItem.className;
-  var width = photoItem.width;
-  var height = photoItem.height;
-  var alternateText = photoItem.alt;
-
-  photoItem.src = photos[0];
-  for (var i = 1; i < photos.length; ++i) {
-    var imageTag = document.createElement('img');
-
-    imageTag.src = photos[i];
-    imageTag.className = className;
-    imageTag.width = width;
-    imageTag.height = height;
-    imageTag.alt = alternateText;
-
-    fragment.appendChild(imageTag);
-  }
-
-  photoItemsContainer.appendChild(fragment);
-};
 
 var adForm = document.querySelector('.notice .ad-form');
 var adFormHeader = adForm.querySelector('.ad-form-header');
@@ -471,25 +538,6 @@ mainMapPin.addEventListener('keydown', function (evt) {
   }
 });
 
-var fillAddress = function (isActivate) {
-  var address = adForm.querySelector('#address');
-
-  var width = mainMapPin.offsetWidth;
-  var height = mainMapPin.offsetHeight;
-  var pinHeight = parseInt(window.getComputedStyle(mainMapPin, ':after').height, 10);
-
-  var positionX = mainMapPin.offsetLeft + 0.5 * width;
-
-  if (!isActivate) {
-    // отображение адреса до активации
-    address.value = positionX + '; ' + (mainMapPin.offsetTop + 0.5 * height);
-    return;
-  }
-
-  // отображение адреса после активации
-  address.value = positionX + '; ' + (mainMapPin.offsetTop + height + pinHeight);
-};
-
 var roomNumberSelector = document.querySelector('#room_number');
 roomNumberSelector.addEventListener('change', function () {
   makeGuestRoomsValidation(roomNumberSelector, guestNumberSelector);
@@ -498,64 +546,6 @@ roomNumberSelector.addEventListener('change', function () {
 var guestNumberSelector = document.querySelector('#capacity');
 guestNumberSelector.addEventListener('change', function () {
   makeGuestRoomsValidation(roomNumberSelector, guestNumberSelector);
-});
-
-var enableForms = function () {
-  // Блокирование формы объявления
-  adFormHeader.removeAttribute('disabled');
-  for (var i = 0; i < adFormElements.length; ++i) {
-    adFormElements[i].removeAttribute('disabled');
-  }
-
-  // Блокирование формы фильтров
-  mapCheckFilter.removeAttribute('disabled');
-  for (var j = 0; j < mapSelectFilters.length; ++j) {
-    mapSelectFilters[j].removeAttribute('disabled');
-  }
-
-  mapSection.classList.remove('map--faded');
-
-  makeGuestRoomsValidation(roomNumberSelector, guestNumberSelector);
-};
-
-var makeGuestRoomsValidation = function (roomSelector, guestSelector) {
-  var roomNumber = parseInt(
-      roomNumberSelector.options[roomNumberSelector.selectedIndex].value,
-      10
-  );
-  var guestNumber = parseInt(guestNumberSelector
-    .options[guestNumberSelector.selectedIndex]
-    .value, 10);
-  var message = '';
-
-  switch (roomNumber) {
-    case 1:
-    case 2:
-    case 3:
-      if (guestNumber > roomNumber || guestNumber === 0) {
-        message = 'В ' + roomNumber + '-комнатный номер количество гостей не более ' +
-          roomNumber + ' и не менее 1';
-      }
-      break;
-
-    case 100:
-      if (guestNumber !== 0) {
-        message = '100-комнатный номер не для гостей';
-      }
-  }
-
-  roomSelector.setCustomValidity(message);
-  guestSelector.setCustomValidity(message);
-};
-
-var buildingTypeSelector = document.querySelector('#type');
-buildingTypeSelector.addEventListener('change', function () {
-  makeTypeMinPriceValidation();
-});
-
-var priceField = document.querySelector('#price');
-priceField.addEventListener('change', function () {
-  makeTypeMinPriceValidation();
 });
 
 var makeTypeMinPriceValidation = function () {
@@ -588,6 +578,20 @@ var makeTypeMinPriceValidation = function () {
   priceField.min = minPrice;
 };
 
+var buildingTypeSelector = document.querySelector('#type');
+buildingTypeSelector.addEventListener('change', function () {
+  makeTypeMinPriceValidation();
+});
+
+var priceField = document.querySelector('#price');
+priceField.addEventListener('change', function () {
+  makeTypeMinPriceValidation();
+});
+
+var makeTimeinTimeoutValidation = function (activeSelector, passiveSelector) {
+  passiveSelector.selectedIndex = activeSelector.selectedIndex;
+};
+
 var timeinSelector = document.querySelector('#timein');
 timeinSelector.addEventListener('change', function () {
   makeTimeinTimeoutValidation(timeinSelector, timeoutSelector);
@@ -596,10 +600,6 @@ var timeoutSelector = document.querySelector('#timeout');
 timeoutSelector.addEventListener('change', function () {
   makeTimeinTimeoutValidation(timeoutSelector, timeinSelector);
 });
-
-var makeTimeinTimeoutValidation = function (activeSelector, passiveSelector) {
-  passiveSelector.selectedIndex = activeSelector.selectedIndex;
-};
 
 disableForms();
 fillAddress(false);
