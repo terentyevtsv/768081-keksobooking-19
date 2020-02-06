@@ -7,28 +7,13 @@
   var mapSection = document.querySelector('.map');
   var mapPinsContainer = mapSection.querySelector('.map__pins');
 
-  var mapPinTemplate = document
-      .querySelector('#pin')
-      .content
-      .querySelector('.map__pin');
-
-  var renderMapPin = function (advertisement) {
-    var mapPin = mapPinTemplate.cloneNode(true);
-
-    var icon = mapPin.querySelector('img');
-    icon.src = advertisement.author.avatar;
-    icon.alt = advertisement.offer.title;
-
-    return mapPin;
-  };
-
   var advertisementMapPins = [];
   var renderMapPins = function () {
     var advertisements = window.data.generateRandomAdvertisements();
     var fragment = document.createDocumentFragment();
 
     for (var i = 0; i < advertisements.length; ++i) {
-      var mapPin = renderMapPin(advertisements[i]);
+      var mapPin = window.pin.renderMapPin(advertisements[i]);
       fragment.appendChild(mapPin);
     }
 
