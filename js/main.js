@@ -507,6 +507,13 @@ var enableForms = function () {
 };
 
 var activateMap = function () {
+  var oldMapPins = mapPinsContainer.querySelectorAll('button[data-adv-id]');
+  if (oldMapPins.length > 0) {
+    advertisementMapPins.length = 0;
+    for (var i = 0; i < oldMapPins.length; ++i) {
+      mapPinsContainer.removeChild(oldMapPins[i]);
+    }
+  }
   renderMapPins();
 
   enableForms();
