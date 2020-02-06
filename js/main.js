@@ -73,40 +73,14 @@ var MAX_GUEST_COUNT = 10;
 
 var LEFT_MOUSE_BUTTON = 0;
 
-var ENTER_KEY = 'Enter';
-var ESCAPE_KEY = 'Escape';
-
 var mapSection = document.querySelector('.map');
-
 var mapPinsContainer = mapSection.querySelector('.map__pins');
-
-// Функция возвращает случайный целый элемент в выбранном диапазоне значений
-var getRandomInteger = function (min, max) {
-  // случайное число от min до (max+1)
-  return Math.floor(min + Math.random() * (max + 1 - min));
-};
-
-var getRandomArrayElements = function (array) {
-  var arrayLength = getRandomInteger(1, array.length);
-  var tmpItemWeights = [];
-  for (var i = 0; i < array.length; ++i) {
-    tmpItemWeights[i] = {
-      weight: Math.random(),
-      arrayContent: array[i]
-    };
-  }
-
-  tmpItemWeights.sort(function (a, b) {
-    return (a.weight - b.weight);
-  });
-  return tmpItemWeights.slice(0, arrayLength);
-};
 
 // Возвращает случайное количество неповторяющихся удобств
 var getRandomFeatures = function () {
   var features = [];
 
-  var randomFeatures = getRandomArrayElements(FEATURES);
+  var randomFeatures = window.utils.getRandomArrayElements(FEATURES);
   for (var i = 0; i < randomFeatures.length; ++i) {
     features[i] = randomFeatures[i].arrayContent;
   }
@@ -118,7 +92,7 @@ var getRandomFeatures = function () {
 var getRandomPhotos = function () {
   var photos = [];
 
-  var randomPhotos = getRandomArrayElements(PHOTOS);
+  var randomPhotos = window.utils.getRandomArrayElements(PHOTOS);
 
   for (var k = 0; k < randomPhotos.length; ++k) {
     photos[k] = randomPhotos[k].arrayContent;
@@ -138,19 +112,19 @@ var generateRandomAdvertisements = function () {
       },
       offer: {
         title: TITLES[i],
-        price: getRandomInteger(MIN_PRICE, MAX_PRICE),
-        type: BUILDING_TYPES[getRandomInteger(0, BUILDING_TYPES.length - 1)],
-        rooms: getRandomInteger(MIN_ROOM_COUNT, MAX_ROOM_COUNT),
-        guests: getRandomInteger(MIN_GUEST_COUNT, MAX_GUEST_COUNT),
-        checkin: CHECKIN_CHECKOUT_TIMES[getRandomInteger(0, checkinCheckoutTimesMaxIndex)],
-        checkout: CHECKIN_CHECKOUT_TIMES[getRandomInteger(0, checkinCheckoutTimesMaxIndex)],
+        price: window.utils.getRandomInteger(MIN_PRICE, MAX_PRICE),
+        type: BUILDING_TYPES[window.utils.getRandomInteger(0, BUILDING_TYPES.length - 1)],
+        rooms: window.utils.getRandomInteger(MIN_ROOM_COUNT, MAX_ROOM_COUNT),
+        guests: window.utils.getRandomInteger(MIN_GUEST_COUNT, MAX_GUEST_COUNT),
+        checkin: CHECKIN_CHECKOUT_TIMES[window.utils.getRandomInteger(0, checkinCheckoutTimesMaxIndex)],
+        checkout: CHECKIN_CHECKOUT_TIMES[window.utils.getRandomInteger(0, checkinCheckoutTimesMaxIndex)],
         features: getRandomFeatures(),
         description: DESCRIPTIONS[i],
         photos: getRandomPhotos()
       },
       location: {
-        x: getRandomInteger(0, mapSection.clientWidth),
-        y: getRandomInteger(MIN_COORDINATE_Y, MAX_COORDINATE_Y)
+        x: window.utils.getRandomInteger(0, mapSection.clientWidth),
+        y: window.utils.getRandomInteger(MIN_COORDINATE_Y, MAX_COORDINATE_Y)
       }
     };
 
@@ -226,9 +200,7 @@ var closeMapCard = function () {
 };
 
 var onDialogEscPress = function (evt) {
-  if (evt.key === ESCAPE_KEY) {
-    closeMapCard();
-  }
+  window.utils.isEscEvent(evt, closeMapCard);
 };
 
 // Возвращает DOM элемент если блок не скрыт
@@ -541,9 +513,7 @@ mainMapPin.addEventListener('mousedown', function (evt) {
 });
 
 mainMapPin.addEventListener('keydown', function (evt) {
-  if (evt.key === ENTER_KEY) {
-    activateMap();
-  }
+  window.utils.isEnterEvent(evt, activateMap);
 });
 
 mapPinsContainer.addEventListener('click', onMapPinsContainerClick);
