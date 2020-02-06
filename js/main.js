@@ -76,17 +76,7 @@ var LEFT_MOUSE_BUTTON = 0;
 var ENTER_KEY = 'Enter';
 var ESCAPE_KEY = 'Escape';
 
-var mapPinTemplate = document
-    .querySelector('#pin')
-    .content
-    .querySelector('.map__pin');
-
 var mapSection = document.querySelector('.map');
-
-var mapCardTemplate = document
-  .querySelector('#card')
-  .content
-  .querySelector('.map__card');
 
 var mapPinsContainer = mapSection.querySelector('.map__pins');
 
@@ -175,6 +165,11 @@ var generateRandomAdvertisements = function () {
   return advertisements;
 };
 
+var mapPinTemplate = document
+    .querySelector('#pin')
+    .content
+    .querySelector('.map__pin');
+
 var renderMapPin = function (advertisement) {
   var mapPin = mapPinTemplate.cloneNode(true);
 
@@ -184,6 +179,9 @@ var renderMapPin = function (advertisement) {
 
   return mapPin;
 };
+
+var advertisementMapPins = [];
+var buildingDescriptions = {};
 
 var renderMapPins = function () {
   var advertisements = generateRandomAdvertisements();
@@ -300,6 +298,10 @@ var createPhotosList = function (photoItemsContainer, mapCard, photos) {
   photoItemsContainer.appendChild(fragment);
 };
 
+var mapCardTemplate = document
+  .querySelector('#card')
+  .content
+  .querySelector('.map__card');
 var fillAdvertisementCard = function (advertisement) {
   var mapCard = mapCardTemplate.cloneNode(true);
 
@@ -425,6 +427,9 @@ var onMapPinsContainerClick = function (evt) {
   }
 };
 
+var adForm = document.querySelector('.notice .ad-form');
+var mainMapPin = mapSection.querySelector('.map__pins .map__pin--main');
+
 var fillAddress = function (isActivate) {
   var address = adForm.querySelector('#address');
 
@@ -443,6 +448,9 @@ var fillAddress = function (isActivate) {
   // отображение адреса после активации
   address.value = positionX + '; ' + (mainMapPin.offsetTop + height + pinHeight);
 };
+
+var roomNumberSelector = document.querySelector('#room_number');
+var guestNumberSelector = document.querySelector('#capacity');
 
 var makeGuestRoomsValidation = function (roomSelector, guestSelector) {
   var roomNumber = parseInt(
@@ -474,6 +482,11 @@ var makeGuestRoomsValidation = function (roomSelector, guestSelector) {
   guestSelector.setCustomValidity(message);
 };
 
+var adFormHeader = adForm.querySelector('.ad-form-header');
+var adFormElements = adForm.querySelectorAll('.ad-form__element');
+var mapCheckFilter = mapSection.querySelector('.map__filters .map__features');
+var mapSelectFilters = mapSection.querySelectorAll('.map__filters .map__filter');
+
 var enableForms = function () {
   // Блокирование формы объявления
   adFormHeader.removeAttribute('disabled');
@@ -492,7 +505,6 @@ var enableForms = function () {
   makeGuestRoomsValidation(roomNumberSelector, guestNumberSelector);
 };
 
-var advertisementMapPins = [];
 var activateMap = function () {
   renderMapPins();
 
@@ -501,15 +513,6 @@ var activateMap = function () {
 
   mapPinsContainer.addEventListener('click', onMapPinsContainerClick);
 };
-
-var buildingDescriptions = {};
-
-var adForm = document.querySelector('.notice .ad-form');
-var adFormHeader = adForm.querySelector('.ad-form-header');
-var adFormElements = adForm.querySelectorAll('.ad-form__element');
-
-var mapCheckFilter = mapSection.querySelector('.map__filters .map__features');
-var mapSelectFilters = mapSection.querySelectorAll('.map__filters .map__filter');
 
 var disableForms = function () {
   // Блокирование формы объявления
@@ -525,7 +528,6 @@ var disableForms = function () {
   }
 };
 
-var mainMapPin = mapSection.querySelector('.map__pins .map__pin--main');
 mainMapPin.addEventListener('mousedown', function (evt) {
   if (evt.button === LEFT_MOUSE_BUTTON) {
     activateMap();
@@ -538,15 +540,16 @@ mainMapPin.addEventListener('keydown', function (evt) {
   }
 });
 
-var roomNumberSelector = document.querySelector('#room_number');
 roomNumberSelector.addEventListener('change', function () {
   makeGuestRoomsValidation(roomNumberSelector, guestNumberSelector);
 });
 
-var guestNumberSelector = document.querySelector('#capacity');
 guestNumberSelector.addEventListener('change', function () {
   makeGuestRoomsValidation(roomNumberSelector, guestNumberSelector);
 });
+
+var buildingTypeSelector = document.querySelector('#type');
+var priceField = document.querySelector('#price');
 
 var makeTypeMinPriceValidation = function () {
   var typeValue = buildingTypeSelector.options[buildingTypeSelector.selectedIndex].value;
@@ -578,12 +581,10 @@ var makeTypeMinPriceValidation = function () {
   priceField.min = minPrice;
 };
 
-var buildingTypeSelector = document.querySelector('#type');
 buildingTypeSelector.addEventListener('change', function () {
   makeTypeMinPriceValidation();
 });
 
-var priceField = document.querySelector('#price');
 priceField.addEventListener('change', function () {
   makeTypeMinPriceValidation();
 });
@@ -593,10 +594,11 @@ var makeTimeinTimeoutValidation = function (activeSelector, passiveSelector) {
 };
 
 var timeinSelector = document.querySelector('#timein');
+var timeoutSelector = document.querySelector('#timeout');
+
 timeinSelector.addEventListener('change', function () {
   makeTimeinTimeoutValidation(timeinSelector, timeoutSelector);
 });
-var timeoutSelector = document.querySelector('#timeout');
 timeoutSelector.addEventListener('change', function () {
   makeTimeinTimeoutValidation(timeoutSelector, timeinSelector);
 });
