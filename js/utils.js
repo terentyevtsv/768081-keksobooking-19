@@ -6,6 +6,8 @@
   var ENTER_KEY = 'Enter';
   var ESCAPE_KEY = 'Escape';
 
+  var LEFT_MOUSE_BUTTON = 0;
+
   window.utils = {
     getMaxItem: function (items) {
       // Функция возвращает максимальное значение из значений в массиве items
@@ -56,6 +58,11 @@
     isEnterEvent: function (evt, action) {
       // Анализ нажатия клавиши enter
       if (evt.key === ENTER_KEY) {
+        action();
+      }
+    },
+    isLeftMouseButtonEvent: function (evt, action) {
+      if (evt.button === LEFT_MOUSE_BUTTON) {
         action();
       }
     }
