@@ -42,13 +42,39 @@
   // Закрытие карточки
   var closeMapCard = function () {
     var mapCard = mapSection.querySelector('.map__card');
-    mapSection.removeChild(mapCard);
-    document.removeEventListener('keydown', onDialogEscPress);
+    if (mapCard !== null) {
+      mapSection.removeChild(mapCard);
+      document.removeEventListener('keydown', onDialogEscPress);
+    }
   };
 
   var onDialogEscPress = function (evt) {
     window.utils.isEscEvent(evt, closeMapCard);
   };
+
+  var activateMap = function () {
+    closeMapCard();
+    var oldMapPins = mapPinsContainer.querySelectorAll('button[data-adv-id]');
+    if (oldMapPins.length > 0) {
+      advertisementMapPins.length = 0;
+      for (var i = 0; i < oldMapPins.length; ++i) {
+        mapPinsContainer.removeChild(oldMapPins[i]);
+      }
+    }
+    renderMapPins();
+
+    window.form.enableForms();
+    window.form.fillAddress(true);
+  };
+
+  var mainMapPin = mapSection.querySelector('.map__pins .map__pin--main');
+  mainMapPin.addEventListener('mousedown', function (evt) {
+    window.utils.isLeftMouseButtonEvent(evt, activateMap);
+  });
+
+  mainMapPin.addEventListener('keydown', function (evt) {
+    window.utils.isEnterEvent(evt, activateMap);
+  });
 
   var onMapPinsContainerClick = function (evt) {
     var targetMapPin = evt.target.closest('button');
@@ -82,23 +108,7 @@
     }
   };
 
-  var activateMap = function () {
-    renderMapPins();
-
-    window.form.enableForms();
-    window.form.fillAddress(true);
-
-    mapPinsContainer.addEventListener('click', onMapPinsContainerClick);
-  };
-
-  var mainMapPin = mapSection.querySelector('.map__pins .map__pin--main');
-  mainMapPin.addEventListener('mousedown', function (evt) {
-    window.utils.isLeftMouseButtonEvent(evt, activateMap);
-  });
-
-  mainMapPin.addEventListener('keydown', function (evt) {
-    window.utils.isEnterEvent(evt, activateMap);
-  });
+  mapPinsContainer.addEventListener('click', onMapPinsContainerClick);
 
   window.form.disableForms();
   window.form.fillAddress(false);

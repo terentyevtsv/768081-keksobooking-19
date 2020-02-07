@@ -10,9 +10,10 @@
         roomNumberSelector.options[roomNumberSelector.selectedIndex].value,
         10
     );
-    var guestNumber = parseInt(guestNumberSelector
-      .options[guestNumberSelector.selectedIndex]
-      .value, 10);
+    var guestNumber = parseInt(
+        guestNumberSelector.options[guestNumberSelector.selectedIndex].value,
+        10
+    );
     var message = '';
 
     switch (roomNumber) {
