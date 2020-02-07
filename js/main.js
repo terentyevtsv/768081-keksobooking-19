@@ -511,8 +511,6 @@ var activateMap = function () {
 
   enableForms();
   fillAddress(true);
-
-  mapPinsContainer.addEventListener('click', onMapPinsContainerClick);
 };
 
 var disableForms = function () {
@@ -540,6 +538,8 @@ mainMapPin.addEventListener('keydown', function (evt) {
     activateMap();
   }
 });
+
+mapPinsContainer.addEventListener('click', onMapPinsContainerClick);
 
 roomNumberSelector.addEventListener('change', function () {
   makeGuestRoomsValidation(roomNumberSelector, guestNumberSelector);
