@@ -95,6 +95,8 @@
 
   window.data = {
     BUILDING_TYPES: BUILDING_TYPES,
+    MIN_COORDINATE_Y: MIN_COORDINATE_Y,
+    MAX_COORDINATE_Y: MAX_COORDINATE_Y,
     generateRandomAdvertisements: function () {
       // Генератор случайных объявлений
       var advertisements = [];

@@ -52,6 +52,7 @@
     window.utils.isEscEvent(evt, closeMapCard);
   };
 
+  var isActive = false;
   var activateMap = function () {
     closeMapCard();
     var oldMapPins = mapPinsContainer.querySelectorAll('button[data-adv-id]');
@@ -62,18 +63,58 @@
       }
     }
     renderMapPins();
-
-    window.form.enableForms();
-    window.form.fillAddress(true);
+    if (!isActive) {
+      isActive = true;
+      window.form.enableForms();
+    }
   };
 
   var mainMapPin = mapSection.querySelector('.map__pins .map__pin--main');
   mainMapPin.addEventListener('mousedown', function (evt) {
-    window.utils.isLeftMouseButtonEvent(evt, activateMap);
+    evt.preventDefault();
+
+    window.utils.isLeftMouseButtonEvent(evt, function () {
+      var startCoords = {
+        x: evt.clientX,
+        y: evt.clientY
+      };
+
+      var onMouseMove = function (moveEvt) {
+        moveEvt.preventDefault();
+
+        var shift = {
+          x: startCoords.x - moveEvt.clientX,
+          y: startCoords.y - moveEvt.clientY
+        };
+
+        startCoords = {
+          x: moveEvt.clientX,
+          y: moveEvt.clientY
+        };
+
+        window.form.fillAddress(true, shift.x, shift.y);
+      };
+
+      var onMouseUp = function (upEvt) {
+        upEvt.preventDefault();
+
+        document.removeEventListener('mousemove', onMouseMove);
+        document.removeEventListener('mouseup', onMouseUp);
+
+        activateMap();
+        window.form.fillAddress(isActive, 0, 0);
+      };
+
+      document.addEventListener('mousemove', onMouseMove);
+      document.addEventListener('mouseup', onMouseUp);
+    });
   });
 
   mainMapPin.addEventListener('keydown', function (evt) {
-    window.utils.isEnterEvent(evt, activateMap);
+    window.utils.isEnterEvent(evt, function () {
+      activateMap();
+      window.form.fillAddress(isActive, 0, 0);
+    });
   });
 
   var onMapPinsContainerClick = function (evt) {
@@ -111,7 +152,7 @@
   mapPinsContainer.addEventListener('click', onMapPinsContainerClick);
 
   window.form.disableForms();
-  window.form.fillAddress(false);
+  window.form.fillAddress(isActive, 0, 0);
 
   var roomNumberSelector = document.querySelector('#room_number');
   var guestNumberSelector = document.querySelector('#capacity');

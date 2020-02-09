@@ -108,24 +108,75 @@
 
   var mainMapPin = mapSection.querySelector('.map__pins .map__pin--main');
 
-  window.form = {
-    fillAddress: function (isActivate) {
-      var address = adForm.querySelector('#address');
+  var address = adForm.querySelector('#address');
+  var pinHeight = parseInt(window.getComputedStyle(mainMapPin, ':after').height, 10);
 
+  // Проверяет координаты на попадание в диапазон
+  // Возвращает координаты как есть либо с учетом допустимых диапазонов значений
+  var getAddress = function (x, y) {
+    var minY = window.data.MIN_COORDINATE_Y;
+    var maxY = window.data.MAX_COORDINATE_Y;
+
+    if (x < 0) {
+      x = 0;
+    } else if (x > mapSection.clientWidth) {
+      x = mapSection.clientWidth;
+    }
+
+    if (y < minY) {
+      y = minY;
+    } else if (y > maxY) {
+      y = maxY;
+    }
+
+    var coordinate = {
+      x: x,
+      y: y,
+    };
+
+    return coordinate;
+  };
+
+  window.form = {
+    fillAddress: function (isActivate, shiftX, shiftY) {
       var width = mainMapPin.offsetWidth;
       var height = mainMapPin.offsetHeight;
-      var pinHeight = parseInt(window.getComputedStyle(mainMapPin, ':after').height, 10);
+      var intHalfPinWidth = Math.round(0.5 * width);
 
-      var positionX = mainMapPin.offsetLeft + 0.5 * width;
+      var coordinate;
 
       if (!isActivate) {
+        // До активации пина координаты острия пина - центр круга пина
+        var x = mainMapPin.offsetLeft + intHalfPinWidth;
+        var y = mainMapPin.offsetTop + intHalfPinWidth;
+
+        // Координаты острия пина с учетом ограничений поля
+        coordinate = getAddress(x, y);
+
+        // Позиция пина с учетом координат острия пина
+        mainMapPin.style.left = (coordinate.x - intHalfPinWidth) + 'px';
+        mainMapPin.style.top = (coordinate.y - intHalfPinWidth) + 'px';
+
         // отображение адреса до активации
-        address.value = positionX + '; ' + (mainMapPin.offsetTop + 0.5 * height);
+        address.value = coordinate.x + '; ' + coordinate.y;
+
         return;
       }
 
       // отображение адреса после активации
-      address.value = positionX + '; ' + (mainMapPin.offsetTop + height + pinHeight);
+
+      // новая позиция пина с учетом смещения
+      var shiftLeft = mainMapPin.offsetLeft - shiftX;
+      var shiftTop = mainMapPin.offsetTop - shiftY;
+
+      // Координаты ОСТРИЯ ПИНА с учетом ограничений поля
+      coordinate = getAddress(shiftLeft + intHalfPinWidth, shiftTop + height + pinHeight);
+
+      // Позиция пина с учетом координат острия пина
+      mainMapPin.style.left = (coordinate.x - intHalfPinWidth) + 'px';
+      mainMapPin.style.top = (coordinate.y - height - pinHeight) + 'px';
+
+      address.value = coordinate.x + '; ' + coordinate.y;
     },
     enableForms: function () {
       // Блокирование формы объявления
