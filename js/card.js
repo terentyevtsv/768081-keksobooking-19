@@ -134,8 +134,7 @@
       }
 
       if (price !== null) {
-        price.innerHTML =
-          advertisement.offer.price + '&#x20bd;<span>/ночь</span>';
+        price.textContent = advertisement.offer.price + '₽/ночь';
       }
 
       if (buildingType !== null) {
