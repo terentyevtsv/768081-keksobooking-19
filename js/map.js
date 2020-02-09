@@ -105,6 +105,11 @@
         window.form.fillAddress(isActive, 0, 0);
       };
 
+      if (!isActive) {
+        isActive = true;
+        window.form.enableForms();
+      }
+
       document.addEventListener('mousemove', onMouseMove);
       document.addEventListener('mouseup', onMouseUp);
     });
