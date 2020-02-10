@@ -91,26 +91,6 @@
     return photos;
   };
 
-  var setProperty = function (data, propertyName, currentObject) {
-    var hasProperty = data.hasOwnProperty(propertyName);
-    if (hasProperty) {
-      currentObject[propertyName] = data[propertyName];
-    }
-  };
-
-  var initialAdvertisement = function (data) {
-    var hasOffer = data.hasOwnProperty('offer');
-    if (!hasOffer) {
-      return null;
-    }
-
-    var advertisement = {};
-    setProperty(data, 'author', advertisement);
-    setProperty(data.author, 'avatar', advertisement.author);
-
-    return advertisement;
-  };
-
   var mapSection = document.querySelector('.map');
 
   window.data = {
@@ -154,25 +134,9 @@
 
       return advertisements;
     },
-    getAdvertisements: function () {
+    loadAdvertisements: function (onSuccess) {
       var onError = function (message) {
 
-      };
-
-      var onSuccess = function (data) {
-        var advertisements = [];
-        for (var i = 0; i < data.length; ++i) {
-          var advertisement = initialAdvertisement(data[i]);
-
-          if (advertisement === null) {
-            continue;
-          }
-
-          advertisements[i] = advertisement;
-        }
-
-        return advertisements;
-        // после загрузки активация фильтра
       };
 
       window.load('https://js.dump.academy/keksobooking/data', onSuccess, onError);

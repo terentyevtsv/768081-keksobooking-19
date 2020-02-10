@@ -20,7 +20,6 @@
     window.utils.isEscEvent(evt, closeMapCard);
   };
 
-  var advertisementMapPins;
   var isActive = false;
   var activateMap = function () {
     if (!isActive) {
@@ -28,7 +27,7 @@
       window.form.enable();
 
       closeMapCard();
-      advertisementMapPins = window.pin.render();
+      window.pin.render();
     }
   };
 
@@ -73,7 +72,7 @@
         window.form.enable();
 
         closeMapCard();
-        advertisementMapPins = window.pin.render();
+        window.pin.render();
       }
 
       document.addEventListener('mousemove', onMouseMove);
@@ -111,7 +110,7 @@
           mapSection.removeChild(currentMapCard);
         }
 
-        var advertisement = advertisementMapPins[index];
+        var advertisement = window.pin.advertisementMapPins[index];
         var mapCard = window.card.fillAdvertisement(advertisement);
         var mapFiltersContainer = mapSection
             .querySelector('.map__filters-container');
