@@ -9,6 +9,15 @@
 
   var advertisementMapPins = [];
   var renderMapPins = function () {
+    closeMapCard();
+    var oldMapPins = mapPinsContainer.querySelectorAll('button[data-adv-id]');
+    if (oldMapPins.length > 0) {
+      advertisementMapPins.length = 0;
+      for (var k = 0; k < oldMapPins.length; ++k) {
+        mapPinsContainer.removeChild(oldMapPins[k]);
+      }
+    }
+
     var advertisements = window.data.generateRandomAdvertisements();
     var fragment = document.createDocumentFragment();
 
@@ -54,18 +63,10 @@
 
   var isActive = false;
   var activateMap = function () {
-    closeMapCard();
-    var oldMapPins = mapPinsContainer.querySelectorAll('button[data-adv-id]');
-    if (oldMapPins.length > 0) {
-      advertisementMapPins.length = 0;
-      for (var i = 0; i < oldMapPins.length; ++i) {
-        mapPinsContainer.removeChild(oldMapPins[i]);
-      }
-    }
-    renderMapPins();
     if (!isActive) {
       isActive = true;
       window.form.enableForms();
+      renderMapPins();
     }
   };
 
@@ -92,7 +93,7 @@
           y: moveEvt.clientY
         };
 
-        window.form.fillAddress(true, shift.x, shift.y);
+        window.form.fillAddress(isActive, shift.x, shift.y);
       };
 
       var onMouseUp = function (upEvt) {
@@ -108,6 +109,7 @@
       if (!isActive) {
         isActive = true;
         window.form.enableForms();
+        renderMapPins();
       }
 
       document.addEventListener('mousemove', onMouseMove);

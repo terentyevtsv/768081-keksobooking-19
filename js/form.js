@@ -30,6 +30,10 @@
         if (guestNumber !== 0) {
           message = '100-комнатный номер не для гостей';
         }
+        break;
+
+      default:
+        throw new Error('Неизвестное количество комнат!');
     }
 
     roomSelector.setCustomValidity(message);
