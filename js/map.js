@@ -7,47 +7,6 @@
   var mapSection = document.querySelector('.map');
   var mapPinsContainer = mapSection.querySelector('.map__pins');
 
-  var advertisementMapPins = [];
-  var renderMapPins = function () {
-    closeMapCard();
-    var oldMapPins = mapPinsContainer.querySelectorAll('button[data-adv-id]');
-    if (oldMapPins.length > 0) {
-      advertisementMapPins.length = 0;
-      for (var k = 0; k < oldMapPins.length; ++k) {
-        mapPinsContainer.removeChild(oldMapPins[k]);
-      }
-    }
-
-    var advertisements = window.data.generateRandomAdvertisements();
-    var fragment = document.createDocumentFragment();
-
-    for (var i = 0; i < advertisements.length; ++i) {
-      var mapPin = window.pin.renderMapPin(advertisements[i]);
-      fragment.appendChild(mapPin);
-    }
-
-    mapPinsContainer.appendChild(fragment);
-
-    var mapPins = mapPinsContainer.querySelectorAll('.map__pin');
-
-    if (mapPins.length > 1) {
-      // Если вставлены еще другие пины кроме главного устанавливаем их координаты
-      for (var j = 0; j < advertisements.length; ++j) {
-        // j + 1, потому что главный пин не учитывается, он уже отрисован
-        // Координаты пина это координаты его верхнего левого угла.
-        // Смещаем пин вдоль осей, чтобы координата острия пина совпала с координатой location
-        // Проводим эти операции после рендеринга, т.к. до этого размеры пинов неизвестны
-        mapPins[j + 1].style.left =
-          (advertisements[j].location.x - 0.5 * mapPins[j + 1].offsetWidth) + 'px';
-        mapPins[j + 1].style.top =
-          (advertisements[j].location.y - mapPins[j + 1].offsetHeight) + 'px';
-
-        mapPins[j + 1].setAttribute('data-adv-id', j);
-        advertisementMapPins[j] = advertisements[j];
-      }
-    }
-  };
-
   // Закрытие карточки
   var closeMapCard = function () {
     var mapCard = mapSection.querySelector('.map__card');
@@ -61,12 +20,15 @@
     window.utils.isEscEvent(evt, closeMapCard);
   };
 
+  var advertisementMapPins;
   var isActive = false;
   var activateMap = function () {
     if (!isActive) {
       isActive = true;
       window.form.enableForms();
-      renderMapPins();
+
+      closeMapCard();
+      advertisementMapPins = window.pin.render();
     }
   };
 
@@ -109,7 +71,9 @@
       if (!isActive) {
         isActive = true;
         window.form.enableForms();
-        renderMapPins();
+
+        closeMapCard();
+        advertisementMapPins = window.pin.render();
       }
 
       document.addEventListener('mousemove', onMouseMove);
