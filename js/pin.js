@@ -29,7 +29,7 @@
         }
       }
 
-      var advertisements = window.data.generateRandomAdvertisements();
+      var advertisements = window.data.getAdvertisements();
       var fragment = document.createDocumentFragment();
 
       for (var i = 0; i < advertisements.length; ++i) {
