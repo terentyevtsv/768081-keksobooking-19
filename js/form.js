@@ -179,18 +179,21 @@
 
       address.value = coordinate.x + '; ' + coordinate.y;
     },
+    enableFilter: function () {
+      // Показ формы фильтров
+      mapCheckFilter.removeAttribute('disabled');
+      for (var j = 0; j < mapSelectFilters.length; ++j) {
+        mapSelectFilters[j].removeAttribute('disabled');
+      }
+    },
     enable: function () {
-      // Блокирование формы объявления
+      // Разблокирование формы объявления
       adFormHeader.removeAttribute('disabled');
       for (var i = 0; i < adFormElements.length; ++i) {
         adFormElements[i].removeAttribute('disabled');
       }
 
-      // Блокирование формы фильтров
-      mapCheckFilter.removeAttribute('disabled');
-      for (var j = 0; j < mapSelectFilters.length; ++j) {
-        mapSelectFilters[j].removeAttribute('disabled');
-      }
+      window.form.enableFilter();
 
       mapSection.classList.remove('map--faded');
 

@@ -91,12 +91,19 @@
   var onMapPinsContainerClick = function (evt) {
     var targetMapPin = evt.target.closest('button');
     if (evt.target.matches('.map__pin') || targetMapPin) {
+      var currentMapPin = evt.target;
       var index = evt.target.getAttribute('data-adv-id');
       if (index === null) {
+        currentMapPin = targetMapPin;
         index = targetMapPin.getAttribute('data-adv-id');
       }
+
       if (index !== null) {
         // Пин точно не главный, т.к. у него нет индекса объявления
+        var activePin = mapPinsContainer.querySelector('.map__pin--active');
+        if (activePin !== null) {
+          activePin.classList.remove('map__pin--active');
+        }
 
         // Если есть открытая карточка то сначала закрываем её
         var currentMapCard = mapSection.querySelector('.map__card');
@@ -116,6 +123,8 @@
         popupClose.addEventListener('click', function () {
           closeMapCard();
         });
+
+        currentMapPin.classList.add('map__pin--active');
       }
     }
   };
