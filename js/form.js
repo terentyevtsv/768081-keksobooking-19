@@ -75,6 +75,9 @@
       case window.data.BUILDING_TYPES[0]:
         minPrice = 10000;
         break;
+
+      default:
+        throw new Error('Неизвестный тип постройки!');
     }
 
     priceField.placeholder = minPrice;
@@ -179,23 +182,12 @@
 
       address.value = coordinate.x + '; ' + coordinate.y;
     },
-    enableFilter: function () {
-      // Показ формы фильтров
-      mapCheckFilter.removeAttribute('disabled');
-      for (var j = 0; j < mapSelectFilters.length; ++j) {
-        mapSelectFilters[j].removeAttribute('disabled');
-      }
-    },
     enable: function () {
       // Разблокирование формы объявления
       adFormHeader.removeAttribute('disabled');
       for (var i = 0; i < adFormElements.length; ++i) {
         adFormElements[i].removeAttribute('disabled');
       }
-
-      window.form.enableFilter();
-
-      mapSection.classList.remove('map--faded');
 
       makeGuestRoomsValidation(roomNumberSelector, guestNumberSelector);
     },

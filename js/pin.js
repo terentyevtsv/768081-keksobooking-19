@@ -59,6 +59,7 @@
     }
 
     // после загрузки активация фильтра
+    window.formHelper.enableFilter();
   };
 
   window.pin = {

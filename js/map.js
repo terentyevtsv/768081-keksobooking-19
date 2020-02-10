@@ -67,13 +67,7 @@
         window.form.fillAddress(isActive, 0, 0);
       };
 
-      if (!isActive) {
-        isActive = true;
-        window.form.enable();
-
-        closeMapCard();
-        window.pin.render();
-      }
+      activateMap();
 
       document.addEventListener('mousemove', onMouseMove);
       document.addEventListener('mouseup', onMouseUp);
