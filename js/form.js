@@ -114,19 +114,16 @@
   // Проверяет координаты на попадание в диапазон
   // Возвращает координаты как есть либо с учетом допустимых диапазонов значений
   var getAddress = function (x, y) {
-    var minY = window.data.MIN_COORDINATE_Y;
-    var maxY = window.data.MAX_COORDINATE_Y;
-
     if (x < 0) {
       x = 0;
     } else if (x > mapSection.clientWidth) {
       x = mapSection.clientWidth;
     }
 
-    if (y < minY) {
-      y = minY;
-    } else if (y > maxY) {
-      y = maxY;
+    if (y < window.data.MIN_COORDINATE_Y) {
+      y = window.data.MIN_COORDINATE_Y;
+    } else if (y > window.data.MAX_COORDINATE_Y) {
+      y = window.data.MAX_COORDINATE_Y;
     }
 
     var coordinate = {
