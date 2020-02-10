@@ -179,7 +179,7 @@
 
       address.value = coordinate.x + '; ' + coordinate.y;
     },
-    enableForms: function () {
+    enable: function () {
       // Блокирование формы объявления
       adFormHeader.removeAttribute('disabled');
       for (var i = 0; i < adFormElements.length; ++i) {
@@ -196,7 +196,7 @@
 
       makeGuestRoomsValidation(roomNumberSelector, guestNumberSelector);
     },
-    disableForms: function () {
+    disable: function () {
       // Блокирование формы объявления
       adFormHeader.setAttribute('disabled', 'true');
       for (var i = 0; i < adFormElements.length; ++i) {

@@ -25,7 +25,7 @@
   var activateMap = function () {
     if (!isActive) {
       isActive = true;
-      window.form.enableForms();
+      window.form.enable();
 
       closeMapCard();
       advertisementMapPins = window.pin.render();
@@ -70,7 +70,7 @@
 
       if (!isActive) {
         isActive = true;
-        window.form.enableForms();
+        window.form.enable();
 
         closeMapCard();
         advertisementMapPins = window.pin.render();
@@ -105,7 +105,7 @@
         }
 
         var advertisement = advertisementMapPins[index];
-        var mapCard = window.card.fillAdvertisementCard(advertisement);
+        var mapCard = window.card.fillAdvertisement(advertisement);
         var mapFiltersContainer = mapSection
             .querySelector('.map__filters-container');
         mapSection.insertBefore(mapCard, mapFiltersContainer);
@@ -122,7 +122,7 @@
 
   mapPinsContainer.addEventListener('click', onMapPinsContainerClick);
 
-  window.form.disableForms();
+  window.form.disable();
   window.form.fillAddress(isActive, 0, 0);
 
   var roomNumberSelector = document.querySelector('#room_number');
