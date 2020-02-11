@@ -139,7 +139,7 @@
         return message;
       };
 
-      window.load('https://js.dump.academy/keksobooking/data', onSuccess, onError);
+      window.load.getData('https://js.dump.academy/keksobooking/data', onSuccess, onError);
     }
   };
 })();

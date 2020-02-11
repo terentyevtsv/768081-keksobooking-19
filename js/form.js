@@ -118,6 +118,25 @@
   var address = adForm.querySelector('#address');
   var pinHeight = parseInt(window.getComputedStyle(mainMapPin, ':after').height, 10);
 
+  var onSuccess = function (data) {
+
+  };
+
+  var onError = function (message) {
+
+  };
+
+  adForm.addEventListener('submit', function (evt) {
+    window.load.sendData(
+        'https://js.dump.academy/keksobooking',
+        new FormData(adForm),
+        onSuccess,
+        onError
+    );
+
+    evt.preventDefault();
+  });
+
   // Проверяет координаты на попадание в диапазон
   // Возвращает координаты как есть либо с учетом допустимых диапазонов значений
   var getAddress = function (x, y) {
