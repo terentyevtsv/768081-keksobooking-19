@@ -20,10 +20,10 @@
     window.utils.isEscEvent(evt, closeMapCard);
   };
 
-  var isActive = false;
+  window.form.isActive = false;
   var activateMap = function () {
-    if (!isActive) {
-      isActive = true;
+    if (!window.form.isActive) {
+      window.form.isActive = true;
       window.form.enable();
 
       closeMapCard();
@@ -54,7 +54,7 @@
           y: moveEvt.clientY
         };
 
-        window.form.fillAddress(isActive, shift.x, shift.y);
+        window.form.fillAddress(shift.x, shift.y);
       };
 
       var onMouseUp = function (upEvt) {
@@ -64,7 +64,7 @@
         document.removeEventListener('mouseup', onMouseUp);
 
         activateMap();
-        window.form.fillAddress(isActive, 0, 0);
+        window.form.fillAddress(0, 0);
       };
 
       activateMap();
@@ -77,7 +77,7 @@
   mainMapPin.addEventListener('keydown', function (evt) {
     window.utils.isEnterEvent(evt, function () {
       activateMap();
-      window.form.fillAddress(isActive, 0, 0);
+      window.form.fillAddress(0, 0);
     });
   });
 
@@ -125,7 +125,7 @@
   mapPinsContainer.addEventListener('click', onMapPinsContainerClick);
 
   window.form.disable();
-  window.form.fillAddress(isActive, 0, 0);
+  window.form.fillAddress(0, 0);
 
   var roomNumberSelector = document.querySelector('#room_number');
   var guestNumberSelector = document.querySelector('#capacity');

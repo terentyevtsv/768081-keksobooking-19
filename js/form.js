@@ -119,7 +119,9 @@
   var pinHeight = parseInt(window.getComputedStyle(mainMapPin, ':after').height, 10);
 
   var onSuccess = function (data) {
+    window.pin.remove();
     window.form.disable();
+    window.form.isActive = false;
   };
 
   var onError = function (message) {
@@ -161,14 +163,15 @@
   };
 
   window.form = {
-    fillAddress: function (isActivate, shiftX, shiftY) {
+    isActive: false,
+    fillAddress: function (shiftX, shiftY) {
       var width = mainMapPin.offsetWidth;
       var height = mainMapPin.offsetHeight;
       var intHalfPinWidth = Math.round(0.5 * width);
 
       var coordinate;
 
-      if (!isActivate) {
+      if (!window.form.isActive) {
         // До активации пина координаты острия пина - центр круга пина
         var x = mainMapPin.offsetLeft + intHalfPinWidth;
         var y = mainMapPin.offsetTop + intHalfPinWidth;
