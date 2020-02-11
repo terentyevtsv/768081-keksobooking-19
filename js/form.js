@@ -119,7 +119,7 @@
   var pinHeight = parseInt(window.getComputedStyle(mainMapPin, ':after').height, 10);
 
   var onSuccess = function (data) {
-
+    window.form.disable();
   };
 
   var onError = function (message) {
@@ -208,6 +208,10 @@
         adFormElements[i].removeAttribute('disabled');
       }
 
+      if (adForm.classList.contains('ad-form--disabled')) {
+        adForm.classList.remove('ad-form--disabled');
+      }
+
       makeGuestRoomsValidation(roomNumberSelector, guestNumberSelector);
     },
     disable: function () {
@@ -217,10 +221,18 @@
         adFormElements[i].setAttribute('disabled', 'true');
       }
 
+      if (!adForm.classList.contains('ad-form--disabled')) {
+        adForm.classList.add('ad-form--disabled');
+      }
+
       // Блокирование формы фильтров
       mapCheckFilter.setAttribute('disabled', 'true');
       for (var j = 0; j < mapSelectFilters.length; ++j) {
         mapSelectFilters[j].setAttribute('disabled', 'true');
+      }
+
+      if (!mapSection.classList.contains('map--faded')) {
+        mapSection.classList.add('map--faded');
       }
     },
     makeTypeMinPriceValidation: makeTypeMinPriceValidation,

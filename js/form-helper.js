@@ -13,7 +13,9 @@
         mapSelectFilters[j].removeAttribute('disabled');
       }
 
-      mapSection.classList.remove('map--faded');
+      if (mapSection.classList.contains('map--faded')) {
+        mapSection.classList.remove('map--faded');
+      }
     }
   };
 })();
