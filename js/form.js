@@ -51,9 +51,7 @@
   var buildingTypeSelector = document.querySelector('#type');
   var priceField = document.querySelector('#price');
 
-  var makeTypeMinPriceValidation = function () {
-    var typeValue = buildingTypeSelector.options[buildingTypeSelector.selectedIndex].value;
-
+  var getMinPrice = function (typeValue) {
     var minPrice;
     switch (typeValue) {
       // Бунгало
@@ -79,6 +77,13 @@
       default:
         throw new Error('Неизвестный тип постройки!');
     }
+
+    return minPrice;
+  };
+
+  var makeTypeMinPriceValidation = function () {
+    var typeValue = buildingTypeSelector.options[buildingTypeSelector.selectedIndex].value;
+    var minPrice = getMinPrice(typeValue);
 
     priceField.placeholder = minPrice;
     priceField.min = minPrice;
@@ -118,10 +123,67 @@
   var address = adForm.querySelector('#address');
   var pinHeight = parseInt(window.getComputedStyle(mainMapPin, ':after').height, 10);
 
+  var description = adForm.querySelector('#description');
+
+  var getDefaultAdvertisementForm = function () {
+    var defaultAdvertisementForm = {
+      avatar: adFormHeader.querySelector('img').src,
+      title: adForm.querySelector('#title').value,
+      buildingTypeIndex: buildingTypeSelector.selectedIndex,
+      price: priceField.value,
+      timeinIndex: timeinSelector.selectedIndex,
+      timeoutIndex: timeoutSelector.selectedIndex,
+      roomsNumberIndex: roomNumberSelector.selectedIndex,
+      capacityIndex: guestNumberSelector.selectedIndex,
+      description: description.value,
+      mainMapPinPosition: {
+        top: mainMapPin.style.top,
+        left: mainMapPin.style.left
+      }
+    };
+
+    return defaultAdvertisementForm;
+  };
+
+  var defaultAdvertisementForm = getDefaultAdvertisementForm();
+
+  var setDefaultAdvertisementForm = function () {
+    adFormHeader.querySelector('img').src = defaultAdvertisementForm.avatar;
+    adForm.querySelector('#title').value = defaultAdvertisementForm.title;
+    address.value = defaultAdvertisementForm.address;
+    buildingTypeSelector.selectedIndex = defaultAdvertisementForm.buildingTypeIndex;
+    priceField.value = defaultAdvertisementForm.price;
+    priceField.placeholder = getMinPrice(
+        buildingTypeSelector[buildingTypeSelector.selectedIndex].value
+    );
+    timeinSelector.selectedIndex = defaultAdvertisementForm.timeinIndex;
+    timeoutSelector.selectedIndex = defaultAdvertisementForm.timeoutIndex;
+    roomNumberSelector.selectedIndex = defaultAdvertisementForm.roomsNumberIndex;
+    guestNumberSelector.selectedIndex = defaultAdvertisementForm.capacityIndex;
+
+    var featureCheckers = adForm.querySelectorAll('input[type=checkbox]');
+    for (var i = 0; i < featureCheckers.length; ++i) {
+      if (featureCheckers[i].checked) {
+        featureCheckers[i].checked = false;
+      }
+    }
+
+    description.value = defaultAdvertisementForm.description;
+    var photoContainer = adForm.querySelector('.ad-form__photo-container .ad-form__photo');
+    var photoImages = photoContainer.querySelectorAll('img');
+    for (var j = 0; j < photoImages.length; ++j) {
+      photoContainer.removeChild(photoImages[j]);
+    }
+
+    mainMapPin.style.top = defaultAdvertisementForm.mainMapPinPosition.top;
+    mainMapPin.style.left = defaultAdvertisementForm.mainMapPinPosition.left;
+  };
+
   var onSuccess = function (data) {
     window.pin.remove();
     window.form.disable();
     window.form.isActive = false;
+    setDefaultAdvertisementForm();
   };
 
   var onError = function (message) {
@@ -184,7 +246,8 @@
         mainMapPin.style.top = (coordinate.y - intHalfPinWidth) + 'px';
 
         // отображение адреса до активации
-        address.value = coordinate.x + '; ' + coordinate.y;
+        defaultAdvertisementForm.address = coordinate.x + '; ' + coordinate.y;
+        address.value = defaultAdvertisementForm.address;
 
         return;
       }
