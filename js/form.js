@@ -179,15 +179,76 @@
     mainMapPin.style.left = defaultAdvertisementForm.mainMapPinPosition.left;
   };
 
-  var onSuccess = function (data) {
+  var successTemplate = document
+      .querySelector('#success')
+      .content
+      .querySelector('.success');
+  var main = document.querySelector('main');
+  var promo = document.querySelector('.promo');
+
+  var setNotActiveStatus = function () {
     window.pin.remove();
     window.form.disable();
     window.form.isActive = false;
     setDefaultAdvertisementForm();
   };
 
-  var onError = function (message) {
+  var onSuccess = function (data) {
+    setNotActiveStatus();
 
+    var success = successTemplate.cloneNode(true);
+    main.insertBefore(success, promo);
+
+    var onSuccessEscPress = function (evt) {
+      window.utils.isEscEvent(evt, function () {
+        main.removeChild(success);
+        document.removeEventListener('keydown', onSuccessEscPress);
+        document.removeEventListener('click', onSuccessDocumentClick);
+      });
+    };
+    document.addEventListener('keydown', onSuccessEscPress);
+
+    var onSuccessDocumentClick = function () {
+      main.removeChild(success);
+      document.removeEventListener('keydown', onSuccessEscPress);
+      document.removeEventListener('click', onSuccessDocumentClick);
+    };
+    document.addEventListener('click', onSuccessDocumentClick);
+
+    return data;
+  };
+
+  var errorTemplate = document
+      .querySelector('#error')
+      .content
+      .querySelector('.error');
+  var onError = function (message) {
+    var error = errorTemplate.cloneNode(true);
+    main.insertBefore(error, promo);
+
+    var onErrorEscPress = function (evt) {
+      window.utils.isEscEvent(evt, function () {
+        main.removeChild(error);
+        document.removeEventListener('keydown', onErrorEscPress);
+        document.removeEventListener('click', onErrorDocumentClick);
+      });
+    };
+    document.addEventListener('keydown', onErrorEscPress);
+
+    var onErrorDocumentClick = function (evt) {
+      document.removeEventListener('keydown', onErrorEscPress);
+      document.removeEventListener('click', onErrorDocumentClick);
+
+      if (evt.target.matches('.error__button')) {
+        main.removeChild(error);
+        return;
+      }
+
+      main.removeChild(error);
+    };
+    document.addEventListener('click', onErrorDocumentClick);
+
+    return message;
   };
 
   adForm.addEventListener('submit', function (evt) {
@@ -199,6 +260,11 @@
     );
 
     evt.preventDefault();
+  });
+
+  var reset = adForm.querySelector('.ad-form__reset');
+  reset.addEventListener('click', function () {
+    setNotActiveStatus();
   });
 
   // Проверяет координаты на попадание в диапазон
