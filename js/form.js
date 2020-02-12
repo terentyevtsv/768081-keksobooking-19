@@ -369,6 +369,30 @@
       }
     },
     makeTypeMinPriceValidation: makeTypeMinPriceValidation,
-    makeGuestRoomsValidation: makeGuestRoomsValidation
+    makeGuestRoomsValidation: makeGuestRoomsValidation,
+    showSuccessNotification: function () {
+      var success = successTemplate.cloneNode(true);
+      var message = success.querySelector('.success__message');
+      message.textContent = 'Нет связи с сервером! Сгенерированы случайные объявления.';
+      main.insertBefore(success, promo);
+
+      var onSuccessEscPress = function (evt) {
+        window.utils.isEscEvent(evt, function () {
+          main.removeChild(success);
+          document.removeEventListener('keydown', onSuccessEscPress);
+          document.removeEventListener('mousedown', onSuccessDocumentClick);
+        });
+      };
+      document.addEventListener('keydown', onSuccessEscPress);
+
+      var onSuccessDocumentClick = function (evt) {
+        window.utils.isLeftMouseButtonEvent(evt, function () {
+          main.removeChild(success);
+          document.removeEventListener('keydown', onSuccessEscPress);
+          document.removeEventListener('mousedown', onSuccessDocumentClick);
+        });
+      };
+      document.addEventListener('mousedown', onSuccessDocumentClick);
+    }
   };
 })();

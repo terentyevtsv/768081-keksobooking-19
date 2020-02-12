@@ -7,6 +7,14 @@
   var mapSection = document.querySelector('.map');
   var mapPinsContainer = mapSection.querySelector('.map__pins');
 
+  var onError = function (message) {
+    var data = window.data.generateRandomAdvertisements();
+    window.pin.onSuccess(data);
+
+    window.form.showSuccessNotification();
+    return message;
+  };
+
   window.form.isActive = false;
   var activateMap = function () {
     if (!window.form.isActive) {
@@ -14,7 +22,7 @@
       window.form.enable();
 
       window.card.close();
-      window.pin.render();
+      window.pin.render(onError);
     }
   };
 

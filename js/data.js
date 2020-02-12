@@ -134,11 +134,7 @@
 
       return advertisements;
     },
-    loadAdvertisements: function (onSuccess) {
-      var onError = function (message) {
-        return message;
-      };
-
+    loadAdvertisements: function (onSuccess, onError) {
       window.load.getData('https://js.dump.academy/keksobooking/data', onSuccess, onError);
     }
   };
