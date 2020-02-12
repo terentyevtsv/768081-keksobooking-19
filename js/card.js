@@ -93,6 +93,8 @@
 
   var buildingDescriptions = getBuildingDescriptions();
 
+  var mapSection = document.querySelector('.map');
+
   window.card = {
     fillAdvertisement: function (advertisement) {
       var mapCard = mapCardTemplate.cloneNode(true);
@@ -184,6 +186,17 @@
 
       // Возврат заполненного элемента
       return mapCard;
+    },
+    close: function () {
+      // Закрытие карточки
+      var mapCard = mapSection.querySelector('.map__card');
+      if (mapCard !== null) {
+        mapSection.removeChild(mapCard);
+        document.removeEventListener('keydown', window.card.onDialogEscPress);
+      }
+    },
+    onDialogEscPress: function (evt) {
+      window.utils.isEscEvent(evt, window.card.closeMapCard);
     }
   };
 })();

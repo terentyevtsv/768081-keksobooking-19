@@ -7,26 +7,13 @@
   var mapSection = document.querySelector('.map');
   var mapPinsContainer = mapSection.querySelector('.map__pins');
 
-  // Закрытие карточки
-  var closeMapCard = function () {
-    var mapCard = mapSection.querySelector('.map__card');
-    if (mapCard !== null) {
-      mapSection.removeChild(mapCard);
-      document.removeEventListener('keydown', onDialogEscPress);
-    }
-  };
-
-  var onDialogEscPress = function (evt) {
-    window.utils.isEscEvent(evt, closeMapCard);
-  };
-
   window.form.isActive = false;
   var activateMap = function () {
     if (!window.form.isActive) {
       window.form.isActive = true;
       window.form.enable();
 
-      closeMapCard();
+      window.card.close();
       window.pin.render();
     }
   };
@@ -110,11 +97,11 @@
             .querySelector('.map__filters-container');
         mapSection.insertBefore(mapCard, mapFiltersContainer);
 
-        document.addEventListener('keydown', onDialogEscPress);
+        document.addEventListener('keydown', window.card.onDialogEscPress);
 
         var popupClose = mapCard.querySelector('.popup__close');
         popupClose.addEventListener('click', function () {
-          closeMapCard();
+          window.card.close();
         });
 
         currentMapPin.classList.add('map__pin--active');

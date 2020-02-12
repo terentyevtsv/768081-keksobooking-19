@@ -187,6 +187,7 @@
   var promo = document.querySelector('.promo');
 
   var setNotActiveStatus = function () {
+    window.card.close();
     window.pin.remove();
     window.form.disable();
     window.form.isActive = false;
