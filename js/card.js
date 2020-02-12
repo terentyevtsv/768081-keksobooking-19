@@ -196,7 +196,7 @@
       }
     },
     onDialogEscPress: function (evt) {
-      window.utils.isEscEvent(evt, window.card.closeMapCard);
+      window.utils.isEscEvent(evt, window.card.close);
     }
   };
 })();
