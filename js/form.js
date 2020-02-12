@@ -145,7 +145,24 @@
     return defaultAdvertisementForm;
   };
 
+  var housingTypeSelector = mapSection.querySelector('#housing-type');
+  var housingPriceSelector = mapSection.querySelector('#housing-price');
+  var housingRoomsSelector = mapSection.querySelector('#housing-rooms');
+  var housingGuestsSelector = mapSection.querySelector('#housing-guests');
+
+  var getDefaultAdvertisementFilter = function () {
+    var defaultAdvertisementFilter = {
+      housingTypeIndex: housingTypeSelector.selectedIndex,
+      housingPriceIndex: housingPriceSelector.selectedIndex,
+      housingRoomsIndex: housingRoomsSelector.selectedIndex,
+      housingGuestsIndex: housingGuestsSelector.selectedIndex
+    };
+
+    return defaultAdvertisementFilter;
+  };
+
   var defaultAdvertisementForm = getDefaultAdvertisementForm();
+  var defaultAdvertisementFilter = getDefaultAdvertisementFilter();
 
   var setDefaultAdvertisementForm = function () {
     adFormHeader.querySelector('img').src = defaultAdvertisementForm.avatar;
@@ -179,6 +196,22 @@
     mainMapPin.style.left = defaultAdvertisementForm.mainMapPinPosition.left;
   };
 
+  var housingFeatures = mapSection.querySelector('#housing-features');
+
+  var setDefaultAdvertisementFilter = function () {
+    housingTypeSelector.selectedIndex = defaultAdvertisementFilter.housingTypeIndex;
+    housingPriceSelector.selectedIndex = defaultAdvertisementFilter.housingPriceIndex;
+    housingRoomsSelector.selectedIndex = defaultAdvertisementFilter.housingRoomsIndex;
+    housingGuestsSelector.selectedIndex = defaultAdvertisementFilter.housingGuestsIndex;
+
+    var housingFeaturesCheckers = housingFeatures.querySelectorAll('.map__checkbox');
+    for (var i = 0; i < housingFeaturesCheckers.length; ++i) {
+      if (housingFeaturesCheckers[i].checked) {
+        housingFeaturesCheckers[i].checked = false;
+      }
+    }
+  };
+
   var successTemplate = document
       .querySelector('#success')
       .content
@@ -192,6 +225,7 @@
     window.form.disable();
     window.form.isActive = false;
     setDefaultAdvertisementForm();
+    setDefaultAdvertisementFilter();
   };
 
   var onSuccess = function (data) {
