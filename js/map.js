@@ -8,9 +8,7 @@
   var mapPinsContainer = mapSection.querySelector('.map__pins');
 
   var onError = function (message) {
-    var data = window.data.generateRandomAdvertisements();
-    window.pin.onSuccess(data);
-
+    window.form.isActive = false;
     window.form.showSuccessNotification();
     return message;
   };
@@ -19,7 +17,6 @@
   var activateMap = function () {
     if (!window.form.isActive) {
       window.form.isActive = true;
-      window.form.enable();
 
       window.card.close();
       window.pin.render(onError);

@@ -228,11 +228,26 @@
     setDefaultAdvertisementFilter();
   };
 
+  var enableForm = function () {
+    // Разблокирование формы объявления
+    adFormHeader.removeAttribute('disabled');
+    for (var i = 0; i < adFormElements.length; ++i) {
+      adFormElements[i].removeAttribute('disabled');
+    }
+
+    if (adForm.classList.contains('ad-form--disabled')) {
+      adForm.classList.remove('ad-form--disabled');
+    }
+
+    makeGuestRoomsValidation(roomNumberSelector, guestNumberSelector);
+  };
+
   var onSuccess = function (data) {
     setNotActiveStatus();
 
     var success = successTemplate.cloneNode(true);
     main.insertBefore(success, promo);
+    enableForm();
 
     var onSuccessEscPress = function (evt) {
       window.utils.isEscEvent(evt, function () {
@@ -368,19 +383,6 @@
 
       address.value = coordinate.x + '; ' + coordinate.y;
     },
-    enable: function () {
-      // Разблокирование формы объявления
-      adFormHeader.removeAttribute('disabled');
-      for (var i = 0; i < adFormElements.length; ++i) {
-        adFormElements[i].removeAttribute('disabled');
-      }
-
-      if (adForm.classList.contains('ad-form--disabled')) {
-        adForm.classList.remove('ad-form--disabled');
-      }
-
-      makeGuestRoomsValidation(roomNumberSelector, guestNumberSelector);
-    },
     disable: function () {
       // Блокирование формы объявления
       adFormHeader.setAttribute('disabled', 'true');
@@ -407,7 +409,7 @@
     showSuccessNotification: function () {
       var success = successTemplate.cloneNode(true);
       var message = success.querySelector('.success__message');
-      message.textContent = 'Нет связи с сервером! Сгенерированы случайные объявления.';
+      message.textContent = 'Нет связи с сервером! Попробуйте создать объявление позже.';
       main.insertBefore(success, promo);
 
       var onSuccessEscPress = function (evt) {
