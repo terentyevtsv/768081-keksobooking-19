@@ -30,6 +30,10 @@
         if (guestNumber !== 0) {
           message = '100-комнатный номер не для гостей';
         }
+        break;
+
+      default:
+        throw new Error('Неизвестное количество комнат!');
     }
 
     roomSelector.setCustomValidity(message);
@@ -71,6 +75,9 @@
       case window.data.BUILDING_TYPES[0]:
         minPrice = 10000;
         break;
+
+      default:
+        throw new Error('Неизвестный тип постройки!');
     }
 
     priceField.placeholder = minPrice;
@@ -175,24 +182,16 @@
 
       address.value = coordinate.x + '; ' + coordinate.y;
     },
-    enableForms: function () {
-      // Блокирование формы объявления
+    enable: function () {
+      // Разблокирование формы объявления
       adFormHeader.removeAttribute('disabled');
       for (var i = 0; i < adFormElements.length; ++i) {
         adFormElements[i].removeAttribute('disabled');
       }
 
-      // Блокирование формы фильтров
-      mapCheckFilter.removeAttribute('disabled');
-      for (var j = 0; j < mapSelectFilters.length; ++j) {
-        mapSelectFilters[j].removeAttribute('disabled');
-      }
-
-      mapSection.classList.remove('map--faded');
-
       makeGuestRoomsValidation(roomNumberSelector, guestNumberSelector);
     },
-    disableForms: function () {
+    disable: function () {
       // Блокирование формы объявления
       adFormHeader.setAttribute('disabled', 'true');
       for (var i = 0; i < adFormElements.length; ++i) {

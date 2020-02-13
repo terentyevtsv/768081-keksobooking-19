@@ -94,7 +94,7 @@
   var buildingDescriptions = getBuildingDescriptions();
 
   window.card = {
-    fillAdvertisementCard: function (advertisement) {
+    fillAdvertisement: function (advertisement) {
       var mapCard = mapCardTemplate.cloneNode(true);
 
       // Получение блоков для вставки значений
