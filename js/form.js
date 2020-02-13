@@ -5,47 +5,12 @@
   var roomNumberSelector = document.querySelector('#room_number');
   var guestNumberSelector = document.querySelector('#capacity');
 
-  var makeGuestRoomsValidation = function (roomSelector, guestSelector) {
-    var roomNumber = parseInt(
-        roomNumberSelector.options[roomNumberSelector.selectedIndex].value,
-        10
-    );
-    var guestNumber = parseInt(
-        guestNumberSelector.options[guestNumberSelector.selectedIndex].value,
-        10
-    );
-    var message = '';
-
-    switch (roomNumber) {
-      case 1:
-      case 2:
-      case 3:
-        if (guestNumber > roomNumber || guestNumber === 0) {
-          message = 'В ' + roomNumber + '-комнатный номер количество гостей не более ' +
-            roomNumber + ' и не менее 1';
-        }
-        break;
-
-      case 100:
-        if (guestNumber !== 0) {
-          message = '100-комнатный номер не для гостей';
-        }
-        break;
-
-      default:
-        throw new Error('Неизвестное количество комнат!');
-    }
-
-    roomSelector.setCustomValidity(message);
-    guestSelector.setCustomValidity(message);
-  };
-
   roomNumberSelector.addEventListener('change', function () {
-    makeGuestRoomsValidation(roomNumberSelector, guestNumberSelector);
+    window.formHelper.makeGuestRoomsValidation(roomNumberSelector, guestNumberSelector);
   });
 
   guestNumberSelector.addEventListener('change', function () {
-    makeGuestRoomsValidation(roomNumberSelector, guestNumberSelector);
+    window.formHelper.makeGuestRoomsValidation(roomNumberSelector, guestNumberSelector);
   });
 
   var buildingTypeSelector = document.querySelector('#type');
@@ -228,26 +193,12 @@
     setDefaultAdvertisementFilter();
   };
 
-  var enableForm = function () {
-    // Разблокирование формы объявления
-    adFormHeader.removeAttribute('disabled');
-    for (var i = 0; i < adFormElements.length; ++i) {
-      adFormElements[i].removeAttribute('disabled');
-    }
-
-    if (adForm.classList.contains('ad-form--disabled')) {
-      adForm.classList.remove('ad-form--disabled');
-    }
-
-    makeGuestRoomsValidation(roomNumberSelector, guestNumberSelector);
-  };
-
   var onSuccess = function (data) {
     setNotActiveStatus();
 
     var success = successTemplate.cloneNode(true);
     main.insertBefore(success, promo);
-    enableForm();
+    window.formHelper.enableForm();
 
     var onSuccessEscPress = function (evt) {
       window.utils.isEscEvent(evt, function () {
@@ -405,7 +356,6 @@
       }
     },
     makeTypeMinPriceValidation: makeTypeMinPriceValidation,
-    makeGuestRoomsValidation: makeGuestRoomsValidation,
     showSuccessNotification: function () {
       var success = successTemplate.cloneNode(true);
       var message = success.querySelector('.success__message');

@@ -121,6 +121,6 @@
 
   var roomNumberSelector = document.querySelector('#room_number');
   var guestNumberSelector = document.querySelector('#capacity');
-  window.form.makeGuestRoomsValidation(roomNumberSelector, guestNumberSelector);
+  window.formHelper.makeGuestRoomsValidation(roomNumberSelector, guestNumberSelector);
   window.form.makeTypeMinPriceValidation();
 })();
