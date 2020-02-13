@@ -26,8 +26,7 @@
     var fragment = document.createDocumentFragment();
     var advertisements = [];
     for (var i = 0; i < data.length; ++i) {
-      var hasOffer = data[i].hasOwnProperty('offer');
-      if (!hasOffer) {
+      if (!data[i].hasOwnProperty('offer')) {
         continue;
       }
 
