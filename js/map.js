@@ -7,27 +7,19 @@
   var mapSection = document.querySelector('.map');
   var mapPinsContainer = mapSection.querySelector('.map__pins');
 
-  // Закрытие карточки
-  var closeMapCard = function () {
-    var mapCard = mapSection.querySelector('.map__card');
-    if (mapCard !== null) {
-      mapSection.removeChild(mapCard);
-      document.removeEventListener('keydown', onDialogEscPress);
-    }
+  var onError = function (message) {
+    window.form.isActive = false;
+    window.form.showReceiveErrorNotification();
+    return message;
   };
 
-  var onDialogEscPress = function (evt) {
-    window.utils.isEscEvent(evt, closeMapCard);
-  };
-
-  var isActive = false;
+  window.form.isActive = false;
   var activateMap = function () {
-    if (!isActive) {
-      isActive = true;
-      window.form.enable();
+    if (!window.form.isActive) {
+      window.form.isActive = true;
 
-      closeMapCard();
-      window.pin.render();
+      window.card.close();
+      window.pin.render(onError);
     }
   };
 
@@ -54,7 +46,7 @@
           y: moveEvt.clientY
         };
 
-        window.form.fillAddress(isActive, shift.x, shift.y);
+        window.form.fillAddress(shift.x, shift.y);
       };
 
       var onMouseUp = function (upEvt) {
@@ -64,7 +56,7 @@
         document.removeEventListener('mouseup', onMouseUp);
 
         activateMap();
-        window.form.fillAddress(isActive, 0, 0);
+        window.form.fillAddress(0, 0);
       };
 
       activateMap();
@@ -77,7 +69,7 @@
   mainMapPin.addEventListener('keydown', function (evt) {
     window.utils.isEnterEvent(evt, function () {
       activateMap();
-      window.form.fillAddress(isActive, 0, 0);
+      window.form.fillAddress(0, 0);
     });
   });
 
@@ -110,11 +102,11 @@
             .querySelector('.map__filters-container');
         mapSection.insertBefore(mapCard, mapFiltersContainer);
 
-        document.addEventListener('keydown', onDialogEscPress);
+        document.addEventListener('keydown', window.card.onDialogEscPress);
 
         var popupClose = mapCard.querySelector('.popup__close');
         popupClose.addEventListener('click', function () {
-          closeMapCard();
+          window.card.close();
         });
 
         currentMapPin.classList.add('map__pin--active');
@@ -125,10 +117,10 @@
   mapPinsContainer.addEventListener('click', onMapPinsContainerClick);
 
   window.form.disable();
-  window.form.fillAddress(isActive, 0, 0);
+  window.form.fillAddress(0, 0);
 
   var roomNumberSelector = document.querySelector('#room_number');
   var guestNumberSelector = document.querySelector('#capacity');
-  window.form.makeGuestRoomsValidation(roomNumberSelector, guestNumberSelector);
+  window.formHelper.makeGuestRoomsValidation(roomNumberSelector, guestNumberSelector);
   window.form.makeTypeMinPriceValidation();
 })();

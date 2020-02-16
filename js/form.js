@@ -5,55 +5,18 @@
   var roomNumberSelector = document.querySelector('#room_number');
   var guestNumberSelector = document.querySelector('#capacity');
 
-  var makeGuestRoomsValidation = function (roomSelector, guestSelector) {
-    var roomNumber = parseInt(
-        roomNumberSelector.options[roomNumberSelector.selectedIndex].value,
-        10
-    );
-    var guestNumber = parseInt(
-        guestNumberSelector.options[guestNumberSelector.selectedIndex].value,
-        10
-    );
-    var message = '';
-
-    switch (roomNumber) {
-      case 1:
-      case 2:
-      case 3:
-        if (guestNumber > roomNumber || guestNumber === 0) {
-          message = 'В ' + roomNumber + '-комнатный номер количество гостей не более ' +
-            roomNumber + ' и не менее 1';
-        }
-        break;
-
-      case 100:
-        if (guestNumber !== 0) {
-          message = '100-комнатный номер не для гостей';
-        }
-        break;
-
-      default:
-        throw new Error('Неизвестное количество комнат!');
-    }
-
-    roomSelector.setCustomValidity(message);
-    guestSelector.setCustomValidity(message);
-  };
-
   roomNumberSelector.addEventListener('change', function () {
-    makeGuestRoomsValidation(roomNumberSelector, guestNumberSelector);
+    window.formHelper.makeGuestRoomsValidation(roomNumberSelector, guestNumberSelector);
   });
 
   guestNumberSelector.addEventListener('change', function () {
-    makeGuestRoomsValidation(roomNumberSelector, guestNumberSelector);
+    window.formHelper.makeGuestRoomsValidation(roomNumberSelector, guestNumberSelector);
   });
 
   var buildingTypeSelector = document.querySelector('#type');
   var priceField = document.querySelector('#price');
 
-  var makeTypeMinPriceValidation = function () {
-    var typeValue = buildingTypeSelector.options[buildingTypeSelector.selectedIndex].value;
-
+  var getMinPrice = function (typeValue) {
     var minPrice;
     switch (typeValue) {
       // Бунгало
@@ -79,6 +42,13 @@
       default:
         throw new Error('Неизвестный тип постройки!');
     }
+
+    return minPrice;
+  };
+
+  var makeTypeMinPriceValidation = function () {
+    var typeValue = buildingTypeSelector.options[buildingTypeSelector.selectedIndex].value;
+    var minPrice = getMinPrice(typeValue);
 
     priceField.placeholder = minPrice;
     priceField.min = minPrice;
@@ -118,6 +88,186 @@
   var address = adForm.querySelector('#address');
   var pinHeight = parseInt(window.getComputedStyle(mainMapPin, ':after').height, 10);
 
+  var description = adForm.querySelector('#description');
+
+  var getDefaultAdvertisementForm = function () {
+    var defaultAdvertisementForm = {
+      avatar: adFormHeader.querySelector('img').src,
+      title: adForm.querySelector('#title').value,
+      buildingTypeIndex: buildingTypeSelector.selectedIndex,
+      price: priceField.value,
+      timeinIndex: timeinSelector.selectedIndex,
+      timeoutIndex: timeoutSelector.selectedIndex,
+      roomsNumberIndex: roomNumberSelector.selectedIndex,
+      capacityIndex: guestNumberSelector.selectedIndex,
+      description: description.value,
+      mainMapPinPosition: {
+        top: mainMapPin.style.top,
+        left: mainMapPin.style.left
+      }
+    };
+
+    return defaultAdvertisementForm;
+  };
+
+  var housingTypeSelector = mapSection.querySelector('#housing-type');
+  var housingPriceSelector = mapSection.querySelector('#housing-price');
+  var housingRoomsSelector = mapSection.querySelector('#housing-rooms');
+  var housingGuestsSelector = mapSection.querySelector('#housing-guests');
+
+  var getDefaultAdvertisementFilter = function () {
+    var defaultAdvertisementFilter = {
+      housingTypeIndex: housingTypeSelector.selectedIndex,
+      housingPriceIndex: housingPriceSelector.selectedIndex,
+      housingRoomsIndex: housingRoomsSelector.selectedIndex,
+      housingGuestsIndex: housingGuestsSelector.selectedIndex
+    };
+
+    return defaultAdvertisementFilter;
+  };
+
+  var defaultAdvertisementForm = getDefaultAdvertisementForm();
+  var defaultAdvertisementFilter = getDefaultAdvertisementFilter();
+
+  var setDefaultAdvertisementForm = function () {
+    adFormHeader.querySelector('img').src = defaultAdvertisementForm.avatar;
+    adForm.querySelector('#title').value = defaultAdvertisementForm.title;
+    address.value = defaultAdvertisementForm.address;
+    buildingTypeSelector.selectedIndex = defaultAdvertisementForm.buildingTypeIndex;
+    priceField.value = defaultAdvertisementForm.price;
+    priceField.placeholder = getMinPrice(
+        buildingTypeSelector[buildingTypeSelector.selectedIndex].value
+    );
+    timeinSelector.selectedIndex = defaultAdvertisementForm.timeinIndex;
+    timeoutSelector.selectedIndex = defaultAdvertisementForm.timeoutIndex;
+    roomNumberSelector.selectedIndex = defaultAdvertisementForm.roomsNumberIndex;
+    guestNumberSelector.selectedIndex = defaultAdvertisementForm.capacityIndex;
+
+    var featureCheckers = adForm.querySelectorAll('input[type=checkbox]');
+    for (var i = 0; i < featureCheckers.length; ++i) {
+      if (featureCheckers[i].checked) {
+        featureCheckers[i].checked = false;
+      }
+    }
+
+    description.value = defaultAdvertisementForm.description;
+    var photoContainer = adForm.querySelector('.ad-form__photo-container .ad-form__photo');
+    var photoImages = photoContainer.querySelectorAll('img');
+    for (var j = 0; j < photoImages.length; ++j) {
+      photoContainer.removeChild(photoImages[j]);
+    }
+
+    mainMapPin.style.top = defaultAdvertisementForm.mainMapPinPosition.top;
+    mainMapPin.style.left = defaultAdvertisementForm.mainMapPinPosition.left;
+  };
+
+  var housingFeatures = mapSection.querySelector('#housing-features');
+
+  var setDefaultAdvertisementFilter = function () {
+    housingTypeSelector.selectedIndex = defaultAdvertisementFilter.housingTypeIndex;
+    housingPriceSelector.selectedIndex = defaultAdvertisementFilter.housingPriceIndex;
+    housingRoomsSelector.selectedIndex = defaultAdvertisementFilter.housingRoomsIndex;
+    housingGuestsSelector.selectedIndex = defaultAdvertisementFilter.housingGuestsIndex;
+
+    var housingFeaturesCheckers = housingFeatures.querySelectorAll('.map__checkbox');
+    for (var i = 0; i < housingFeaturesCheckers.length; ++i) {
+      if (housingFeaturesCheckers[i].checked) {
+        housingFeaturesCheckers[i].checked = false;
+      }
+    }
+  };
+
+  var successTemplate = document
+      .querySelector('#success')
+      .content
+      .querySelector('.success');
+  var main = document.querySelector('main');
+  var promo = document.querySelector('.promo');
+
+  var setNotActiveStatus = function () {
+    window.card.close();
+    window.pin.remove();
+    window.form.disable();
+    window.form.isActive = false;
+    setDefaultAdvertisementForm();
+    setDefaultAdvertisementFilter();
+  };
+
+  var onSuccess = function (data) {
+    setNotActiveStatus();
+
+    var success = successTemplate.cloneNode(true);
+    main.insertBefore(success, promo);
+    window.formHelper.enableForm();
+
+    var onSuccessEscPress = function (evt) {
+      window.utils.isEscEvent(evt, function () {
+        main.removeChild(success);
+        document.removeEventListener('keydown', onSuccessEscPress);
+        document.removeEventListener('click', onSuccessDocumentClick);
+      });
+    };
+    document.addEventListener('keydown', onSuccessEscPress);
+
+    var onSuccessDocumentClick = function () {
+      main.removeChild(success);
+      document.removeEventListener('keydown', onSuccessEscPress);
+      document.removeEventListener('click', onSuccessDocumentClick);
+    };
+    document.addEventListener('click', onSuccessDocumentClick);
+
+    return data;
+  };
+
+  var errorTemplate = document
+      .querySelector('#error')
+      .content
+      .querySelector('.error');
+  var onError = function (message) {
+    var error = errorTemplate.cloneNode(true);
+    main.insertBefore(error, promo);
+
+    var onErrorEscPress = function (evt) {
+      window.utils.isEscEvent(evt, function () {
+        main.removeChild(error);
+        document.removeEventListener('keydown', onErrorEscPress);
+        document.removeEventListener('click', onErrorDocumentClick);
+      });
+    };
+    document.addEventListener('keydown', onErrorEscPress);
+
+    var onErrorDocumentClick = function (evt) {
+      document.removeEventListener('keydown', onErrorEscPress);
+      document.removeEventListener('click', onErrorDocumentClick);
+
+      if (evt.target.matches('.error__button')) {
+        main.removeChild(error);
+        return;
+      }
+
+      main.removeChild(error);
+    };
+    document.addEventListener('click', onErrorDocumentClick);
+
+    return message;
+  };
+
+  adForm.addEventListener('submit', function (evt) {
+    window.load.sendData(
+        'https://js.dump.academy/keksobooking',
+        new FormData(adForm),
+        onSuccess,
+        onError
+    );
+
+    evt.preventDefault();
+  });
+
+  var reset = adForm.querySelector('.ad-form__reset');
+  reset.addEventListener('click', function () {
+    setNotActiveStatus();
+  });
+
   // Проверяет координаты на попадание в диапазон
   // Возвращает координаты как есть либо с учетом допустимых диапазонов значений
   var getAddress = function (x, y) {
@@ -142,14 +292,15 @@
   };
 
   window.form = {
-    fillAddress: function (isActivate, shiftX, shiftY) {
+    isActive: false,
+    fillAddress: function (shiftX, shiftY) {
       var width = mainMapPin.offsetWidth;
       var height = mainMapPin.offsetHeight;
       var intHalfPinWidth = Math.round(0.5 * width);
 
       var coordinate;
 
-      if (!isActivate) {
+      if (!window.form.isActive) {
         // До активации пина координаты острия пина - центр круга пина
         var x = mainMapPin.offsetLeft + intHalfPinWidth;
         var y = mainMapPin.offsetTop + intHalfPinWidth;
@@ -162,7 +313,8 @@
         mainMapPin.style.top = (coordinate.y - intHalfPinWidth) + 'px';
 
         // отображение адреса до активации
-        address.value = coordinate.x + '; ' + coordinate.y;
+        defaultAdvertisementForm.address = coordinate.x + '; ' + coordinate.y;
+        address.value = defaultAdvertisementForm.address;
 
         return;
       }
@@ -182,15 +334,6 @@
 
       address.value = coordinate.x + '; ' + coordinate.y;
     },
-    enable: function () {
-      // Разблокирование формы объявления
-      adFormHeader.removeAttribute('disabled');
-      for (var i = 0; i < adFormElements.length; ++i) {
-        adFormElements[i].removeAttribute('disabled');
-      }
-
-      makeGuestRoomsValidation(roomNumberSelector, guestNumberSelector);
-    },
     disable: function () {
       // Блокирование формы объявления
       adFormHeader.setAttribute('disabled', 'true');
@@ -198,13 +341,44 @@
         adFormElements[i].setAttribute('disabled', 'true');
       }
 
+      if (!adForm.classList.contains('ad-form--disabled')) {
+        adForm.classList.add('ad-form--disabled');
+      }
+
       // Блокирование формы фильтров
       mapCheckFilter.setAttribute('disabled', 'true');
       for (var j = 0; j < mapSelectFilters.length; ++j) {
         mapSelectFilters[j].setAttribute('disabled', 'true');
       }
+
+      if (!mapSection.classList.contains('map--faded')) {
+        mapSection.classList.add('map--faded');
+      }
     },
     makeTypeMinPriceValidation: makeTypeMinPriceValidation,
-    makeGuestRoomsValidation: makeGuestRoomsValidation
+    showReceiveErrorNotification: function () {
+      var success = successTemplate.cloneNode(true);
+      var message = success.querySelector('.success__message');
+      message.textContent = 'Нет связи с сервером! Попробуйте создать объявление позже.';
+      main.insertBefore(success, promo);
+
+      var onSuccessEscPress = function (evt) {
+        window.utils.isEscEvent(evt, function () {
+          main.removeChild(success);
+          document.removeEventListener('keydown', onSuccessEscPress);
+          document.removeEventListener('mousedown', onSuccessDocumentClick);
+        });
+      };
+      document.addEventListener('keydown', onSuccessEscPress);
+
+      var onSuccessDocumentClick = function (evt) {
+        window.utils.isLeftMouseButtonEvent(evt, function () {
+          main.removeChild(success);
+          document.removeEventListener('keydown', onSuccessEscPress);
+          document.removeEventListener('mousedown', onSuccessDocumentClick);
+        });
+      };
+      document.addEventListener('mousedown', onSuccessDocumentClick);
+    }
   };
 })();

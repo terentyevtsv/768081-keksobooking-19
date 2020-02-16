@@ -59,19 +59,21 @@
 
     // после загрузки активация фильтра
     window.formHelper.enableFilter();
+    window.formHelper.enableForm();
   };
 
   window.pin = {
     advertisementMapPins: advertisementMapPins,
-    render: function () {
+    remove: function () {
       var oldMapPins = mapPinsContainer.querySelectorAll('button[data-adv-id]');
       if (oldMapPins.length > 0) {
         for (var k = 0; k < oldMapPins.length; ++k) {
           mapPinsContainer.removeChild(oldMapPins[k]);
         }
       }
-
-      window.data.loadAdvertisements(onSuccess);
+    },
+    render: function (onError) {
+      window.data.loadAdvertisements(onSuccess, onError);
     }
   };
 })();
