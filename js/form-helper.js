@@ -10,9 +10,16 @@
   var roomNumberSelector = document.querySelector('#room_number');
   var guestNumberSelector = document.querySelector('#capacity');
   var housingTypeSelector = mapSection.querySelector('#housing-type');
+  var housingPriceSelector = mapSection.querySelector('#housing-price');
+  var housingRoomsSelector = mapSection.querySelector('#housing-rooms');
+  var housingGuestsSelector = mapSection.querySelector('#housing-guests');
+
+  var housingFeatures = mapSection.querySelector('#housing-features');
+  var housingFeaturesCheckers = housingFeatures.querySelectorAll('.map__checkbox');
 
   window.formHelper = {
     onHousingTypeSelectorChange: function () {
+      window.card.close();
       var type = housingTypeSelector[housingTypeSelector.selectedIndex].value;
       var renderingAdvertisements = window.data.allAdvertisements;
       if (type !== 'any') {
@@ -25,6 +32,18 @@
 
       window.pinHelper.renderPins(renderingAdvertisements);
     },
+    onHousingPriceSelectorChange: function () {
+      window.card.close();
+    },
+    onHousingRoomsSelectorChange: function () {
+      window.card.close();
+    },
+    onHousingGuestsSelectorChange: function () {
+      window.card.close();
+    },
+    onHousingFeaturesCheckersChange: function () {
+      window.card.close();
+    },
     enableFilter: function () {
       // Показ формы фильтров
       mapCheckFilter.removeAttribute('disabled');
@@ -36,6 +55,24 @@
           'change',
           window.formHelper.onHousingTypeSelectorChange
       );
+      housingPriceSelector.addEventListener(
+          'change',
+          window.formHelper.onHousingPriceSelectorChange
+      );
+      housingRoomsSelector.addEventListener(
+          'change',
+          window.formHelper.onHousingRoomsSelectorChange
+      );
+      housingGuestsSelector.addEventListener(
+          'change',
+          window.formHelper.onHousingGuestsSelectorChange
+      );
+
+      housingFeaturesCheckers.forEach(function (item) {
+        item.addEventListener(
+            'change',
+            window.formHelper.onHousingFeaturesCheckersChange);
+      });
 
       if (mapSection.classList.contains('map--faded')) {
         mapSection.classList.remove('map--faded');

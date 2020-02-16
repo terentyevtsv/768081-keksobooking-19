@@ -116,7 +116,7 @@
 
   mapPinsContainer.addEventListener('click', onMapPinsContainerClick);
 
-  window.form.disable();
+  window.form.disable(true);
   window.form.fillAddress(0, 0);
 
   var roomNumberSelector = document.querySelector('#room_number');
