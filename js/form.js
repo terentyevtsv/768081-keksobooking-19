@@ -356,7 +356,7 @@
       }
     },
     makeTypeMinPriceValidation: makeTypeMinPriceValidation,
-    showSuccessNotification: function () {
+    showReceiveErrorNotification: function () {
       var success = successTemplate.cloneNode(true);
       var message = success.querySelector('.success__message');
       message.textContent = 'Нет связи с сервером! Попробуйте создать объявление позже.';

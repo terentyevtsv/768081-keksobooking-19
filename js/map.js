@@ -9,7 +9,7 @@
 
   var onError = function (message) {
     window.form.isActive = false;
-    window.form.showSuccessNotification();
+    window.form.showReceiveErrorNotification();
     return message;
   };
 
