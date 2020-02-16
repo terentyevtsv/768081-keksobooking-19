@@ -357,28 +357,28 @@
     },
     makeTypeMinPriceValidation: makeTypeMinPriceValidation,
     showReceiveErrorNotification: function () {
-      var success = successTemplate.cloneNode(true);
-      var message = success.querySelector('.success__message');
+      var receiveError = successTemplate.cloneNode(true);
+      var message = receiveError.querySelector('.success__message');
       message.textContent = 'Нет связи с сервером! Попробуйте создать объявление позже.';
-      main.insertBefore(success, promo);
+      main.insertBefore(receiveError, promo);
 
-      var onSuccessEscPress = function (evt) {
+      var onReceiveErrorEscPress = function (evt) {
         window.utils.isEscEvent(evt, function () {
-          main.removeChild(success);
-          document.removeEventListener('keydown', onSuccessEscPress);
-          document.removeEventListener('mousedown', onSuccessDocumentClick);
+          main.removeChild(receiveError);
+          document.removeEventListener('keydown', onReceiveErrorEscPress);
+          document.removeEventListener('mousedown', onReceiveErrorDocumentClick);
         });
       };
-      document.addEventListener('keydown', onSuccessEscPress);
+      document.addEventListener('keydown', onReceiveErrorEscPress);
 
-      var onSuccessDocumentClick = function (evt) {
+      var onReceiveErrorDocumentClick = function (evt) {
         window.utils.isLeftMouseButtonEvent(evt, function () {
-          main.removeChild(success);
-          document.removeEventListener('keydown', onSuccessEscPress);
-          document.removeEventListener('mousedown', onSuccessDocumentClick);
+          main.removeChild(receiveError);
+          document.removeEventListener('keydown', onReceiveErrorEscPress);
+          document.removeEventListener('mousedown', onReceiveErrorDocumentClick);
         });
       };
-      document.addEventListener('mousedown', onSuccessDocumentClick);
+      document.addEventListener('mousedown', onReceiveErrorDocumentClick);
     }
   };
 })();
