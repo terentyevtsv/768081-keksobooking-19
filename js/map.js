@@ -96,7 +96,7 @@
           mapSection.removeChild(currentMapCard);
         }
 
-        var advertisement = window.pin.advertisementMapPins[index];
+        var advertisement = window.pinHelper.advertisementMapPins[index];
         var mapCard = window.card.fillAdvertisement(advertisement);
         var mapFiltersContainer = mapSection
             .querySelector('.map__filters-container');

@@ -186,7 +186,7 @@
 
   var setNotActiveStatus = function () {
     window.card.close();
-    window.pin.remove();
+    window.pinHelper.remove();
     window.form.disable();
     window.form.isActive = false;
     setDefaultAdvertisementForm();
@@ -350,6 +350,11 @@
       for (var j = 0; j < mapSelectFilters.length; ++j) {
         mapSelectFilters[j].setAttribute('disabled', 'true');
       }
+
+      housingTypeSelector.removeEventListener(
+          'change',
+          window.formHelper.onHousingTypeSelectorChange
+      );
 
       if (!mapSection.classList.contains('map--faded')) {
         mapSection.classList.add('map--faded');

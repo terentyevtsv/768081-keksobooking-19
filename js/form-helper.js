@@ -9,14 +9,33 @@
   var adFormElements = adForm.querySelectorAll('.ad-form__element');
   var roomNumberSelector = document.querySelector('#room_number');
   var guestNumberSelector = document.querySelector('#capacity');
+  var housingTypeSelector = mapSection.querySelector('#housing-type');
 
   window.formHelper = {
+    onHousingTypeSelectorChange: function () {
+      var type = housingTypeSelector[housingTypeSelector.selectedIndex].value;
+      var renderingAdvertisements = window.data.allAdvertisements;
+      if (type !== 'any') {
+        renderingAdvertisements = renderingAdvertisements.filter(function (advertisement) {
+          return advertisement.offer.type === type;
+        });
+      }
+      renderingAdvertisements = renderingAdvertisements
+        .slice(0, window.pinHelper.RENDERED_PINS_COUNT);
+
+      window.pinHelper.renderPins(renderingAdvertisements);
+    },
     enableFilter: function () {
       // Показ формы фильтров
       mapCheckFilter.removeAttribute('disabled');
       for (var j = 0; j < mapSelectFilters.length; ++j) {
         mapSelectFilters[j].removeAttribute('disabled');
       }
+
+      housingTypeSelector.addEventListener(
+          'change',
+          window.formHelper.onHousingTypeSelectorChange
+      );
 
       if (mapSection.classList.contains('map--faded')) {
         mapSection.classList.remove('map--faded');
