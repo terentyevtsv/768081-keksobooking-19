@@ -17,32 +17,41 @@
   var housingFeatures = mapSection.querySelector('#housing-features');
   var housingFeaturesCheckers = housingFeatures.querySelectorAll('.map__checkbox');
 
+  var makeFilter = function () {
+    window.card.close();
+
+    var housingCheckedFeatures = housingFeatures.querySelectorAll('.map__checkbox:checked');
+    var renderingAdvertisements = window.data.allAdvertisements
+      .filter(function (advertisement) {
+        return window.filter.makeItemFilter(
+            advertisement,
+            housingTypeSelector,
+            housingPriceSelector,
+            housingRoomsSelector,
+            housingGuestsSelector,
+            housingCheckedFeatures
+        );
+      });
+    window.pinHelper.renderPins(
+        renderingAdvertisements.slice(0, window.pinHelper.RENDERED_PINS_COUNT)
+    );
+  };
+
   window.formHelper = {
     onHousingTypeSelectorChange: function () {
-      window.card.close();
-      var type = housingTypeSelector[housingTypeSelector.selectedIndex].value;
-      var renderingAdvertisements = window.data.allAdvertisements;
-      if (type !== 'any') {
-        renderingAdvertisements = renderingAdvertisements.filter(function (advertisement) {
-          return advertisement.offer.type === type;
-        });
-      }
-      renderingAdvertisements = renderingAdvertisements
-        .slice(0, window.pinHelper.RENDERED_PINS_COUNT);
-
-      window.pinHelper.renderPins(renderingAdvertisements);
+      makeFilter();
     },
     onHousingPriceSelectorChange: function () {
-      window.card.close();
+      makeFilter();
     },
     onHousingRoomsSelectorChange: function () {
-      window.card.close();
+      makeFilter();
     },
     onHousingGuestsSelectorChange: function () {
-      window.card.close();
+      makeFilter();
     },
     onHousingFeaturesCheckersChange: function () {
-      window.card.close();
+      makeFilter();
     },
     enableFilter: function () {
       // Показ формы фильтров
