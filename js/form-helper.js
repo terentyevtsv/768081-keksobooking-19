@@ -37,21 +37,25 @@
     );
   };
 
+  var makeDebouncedFilter = window.debounce(function () {
+    makeFilter();
+  });
+
   window.formHelper = {
     onHousingTypeSelectorChange: function () {
-      makeFilter();
+      makeDebouncedFilter();
     },
     onHousingPriceSelectorChange: function () {
-      makeFilter();
+      makeDebouncedFilter();
     },
     onHousingRoomsSelectorChange: function () {
-      makeFilter();
+      makeDebouncedFilter();
     },
     onHousingGuestsSelectorChange: function () {
-      makeFilter();
+      makeDebouncedFilter();
     },
     onHousingFeaturesCheckersChange: function () {
-      makeFilter();
+      makeDebouncedFilter();
     },
     enableFilter: function () {
       // Показ формы фильтров
