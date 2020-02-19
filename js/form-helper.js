@@ -71,7 +71,8 @@
       housingFeaturesCheckers.forEach(function (item) {
         item.addEventListener(
             'change',
-            window.formHelper.onHousingFeaturesCheckersChange);
+            window.formHelper.onHousingFeaturesCheckersChange
+        );
       });
 
       if (mapSection.classList.contains('map--faded')) {

@@ -373,7 +373,8 @@
         housingFeaturesCheckers.forEach(function (item) {
           item.removeEventListener(
               'change',
-              window.formHelper.onHousingFeaturesCheckersChange);
+              window.formHelper.onHousingFeaturesCheckersChange
+          );
         });
       }
 
