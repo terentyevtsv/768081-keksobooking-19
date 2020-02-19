@@ -96,7 +96,7 @@
           mapSection.removeChild(currentMapCard);
         }
 
-        var advertisement = window.pin.advertisementMapPins[index];
+        var advertisement = window.pinHelper.advertisementMapPins[index];
         var mapCard = window.card.fillAdvertisement(advertisement);
         var mapFiltersContainer = mapSection
             .querySelector('.map__filters-container');
@@ -116,7 +116,7 @@
 
   mapPinsContainer.addEventListener('click', onMapPinsContainerClick);
 
-  window.form.disable();
+  window.form.disable(true);
   window.form.fillAddress(0, 0);
 
   var roomNumberSelector = document.querySelector('#room_number');

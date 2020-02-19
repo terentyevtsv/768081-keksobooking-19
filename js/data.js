@@ -136,6 +136,7 @@
     },
     loadAdvertisements: function (onSuccess, onError) {
       window.load.getData('https://js.dump.academy/keksobooking/data', onSuccess, onError);
-    }
+    },
+    allAdvertisements: []
   };
 })();

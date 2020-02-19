@@ -186,8 +186,8 @@
 
   var setNotActiveStatus = function () {
     window.card.close();
-    window.pin.remove();
-    window.form.disable();
+    window.pinHelper.remove();
+    window.form.disable(false);
     window.form.isActive = false;
     setDefaultAdvertisementForm();
     setDefaultAdvertisementFilter();
@@ -198,7 +198,6 @@
 
     var success = successTemplate.cloneNode(true);
     main.insertBefore(success, promo);
-    window.formHelper.enableForm();
 
     var onSuccessEscPress = function (evt) {
       window.utils.isEscEvent(evt, function () {
@@ -291,6 +290,7 @@
     return coordinate;
   };
 
+  var housingFeaturesCheckers = housingFeatures.querySelectorAll('.map__checkbox');
   window.form = {
     isActive: false,
     fillAddress: function (shiftX, shiftY) {
@@ -334,7 +334,7 @@
 
       address.value = coordinate.x + '; ' + coordinate.y;
     },
-    disable: function () {
+    disable: function (isFormIntializing) {
       // Блокирование формы объявления
       adFormHeader.setAttribute('disabled', 'true');
       for (var i = 0; i < adFormElements.length; ++i) {
@@ -349,6 +349,33 @@
       mapCheckFilter.setAttribute('disabled', 'true');
       for (var j = 0; j < mapSelectFilters.length; ++j) {
         mapSelectFilters[j].setAttribute('disabled', 'true');
+      }
+
+      if (!isFormIntializing) {
+        housingTypeSelector.removeEventListener(
+            'change',
+            window.formHelper.onHousingTypeSelectorChange
+        );
+
+        housingPriceSelector.removeEventListener(
+            'change',
+            window.formHelper.onHousingPriceSelectorChange
+        );
+        housingRoomsSelector.removeEventListener(
+            'change',
+            window.formHelper.onHousingRoomsSelectorChange
+        );
+        housingGuestsSelector.removeEventListener(
+            'change',
+            window.formHelper.onHousingGuestsSelectorChange
+        );
+
+        housingFeaturesCheckers.forEach(function (item) {
+          item.removeEventListener(
+              'change',
+              window.formHelper.onHousingFeaturesCheckersChange
+          );
+        });
       }
 
       if (!mapSection.classList.contains('map--faded')) {
