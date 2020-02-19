@@ -1,7 +1,7 @@
 'use strict';
 
 (function () {
-  var makeFilterByBuildingType = function (advertisement, buildingType) {
+  var filterByBuildingType = function (advertisement, buildingType) {
     if (!advertisement.offer.hasOwnProperty('type')) {
       return false;
     }
@@ -13,7 +13,7 @@
     return advertisement.offer.type === buildingType;
   };
 
-  var makeFilterByPrice = function (advertisement, priceInterval) {
+  var filterByPrice = function (advertisement, priceInterval) {
     if (!advertisement.offer.hasOwnProperty('price')) {
       return false;
     }
@@ -48,7 +48,7 @@
     return false;
   };
 
-  var makeFilterByRooms = function (advertisement, roomsCount) {
+  var filterByRooms = function (advertisement, roomsCount) {
     if (!advertisement.offer.hasOwnProperty('rooms')) {
       return false;
     }
@@ -72,7 +72,7 @@
     return false;
   };
 
-  var makeFilterByGuests = function (advertisement, guestCount) {
+  var filterByGuests = function (advertisement, guestCount) {
     if (!advertisement.offer.hasOwnProperty('guests')) {
       return false;
     }
@@ -96,7 +96,7 @@
     return false;
   };
 
-  var makeFilterByFeatures = function (advertisement, checkedFeatures) {
+  var filterByFeatures = function (advertisement, checkedFeatures) {
     if (!advertisement.offer.hasOwnProperty('features')) {
       return false;
     }
@@ -122,7 +122,7 @@
   };
 
   window.filter = {
-    makeItemFilter: function (
+    filterItem: function (
         advertisement,
         typeSelector,
         priceSelector,
@@ -131,11 +131,11 @@
         checkedFeatures
     ) {
       return (
-        makeFilterByBuildingType(advertisement, typeSelector[typeSelector.selectedIndex].value) &&
-        makeFilterByPrice(advertisement, priceSelector[priceSelector.selectedIndex].value) &&
-        makeFilterByRooms(advertisement, roomsSelector[roomsSelector.selectedIndex].value) &&
-        makeFilterByGuests(advertisement, guestsSelector[guestsSelector.selectedIndex].value) &&
-        makeFilterByFeatures(advertisement, checkedFeatures)
+        filterByBuildingType(advertisement, typeSelector[typeSelector.selectedIndex].value) &&
+        filterByPrice(advertisement, priceSelector[priceSelector.selectedIndex].value) &&
+        filterByRooms(advertisement, roomsSelector[roomsSelector.selectedIndex].value) &&
+        filterByGuests(advertisement, guestsSelector[guestsSelector.selectedIndex].value) &&
+        filterByFeatures(advertisement, checkedFeatures)
       );
     }
   };

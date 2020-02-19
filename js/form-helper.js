@@ -1,6 +1,8 @@
 'use strict';
 
 (function () {
+  var DEBOUNCE_INTERVAL = 500; // ms
+
   var mapSection = document.querySelector('.map');
   var mapCheckFilter = mapSection.querySelector('.map__filters .map__features');
   var mapSelectFilters = mapSection.querySelectorAll('.map__filters .map__filter');
@@ -17,13 +19,13 @@
   var housingFeatures = mapSection.querySelector('#housing-features');
   var housingFeaturesCheckers = housingFeatures.querySelectorAll('.map__checkbox');
 
-  var makeFilter = function () {
+  var filter = function () {
     window.card.close();
 
     var housingCheckedFeatures = housingFeatures.querySelectorAll('.map__checkbox:checked');
     var renderingAdvertisements = window.data.allAdvertisements
       .filter(function (advertisement) {
-        return window.filter.makeItemFilter(
+        return window.filter.filterItem(
             advertisement,
             housingTypeSelector,
             housingPriceSelector,
@@ -37,25 +39,25 @@
     );
   };
 
-  var makeDebouncedFilter = window.debounce(function () {
-    makeFilter();
-  });
+  var noDebounceFilter = window.debounce(function () {
+    filter();
+  }, DEBOUNCE_INTERVAL);
 
   window.formHelper = {
     onHousingTypeSelectorChange: function () {
-      makeDebouncedFilter();
+      noDebounceFilter();
     },
     onHousingPriceSelectorChange: function () {
-      makeDebouncedFilter();
+      noDebounceFilter();
     },
     onHousingRoomsSelectorChange: function () {
-      makeDebouncedFilter();
+      noDebounceFilter();
     },
     onHousingGuestsSelectorChange: function () {
-      makeDebouncedFilter();
+      noDebounceFilter();
     },
     onHousingFeaturesCheckersChange: function () {
-      makeDebouncedFilter();
+      noDebounceFilter();
     },
     enableFilter: function () {
       // Показ формы фильтров
