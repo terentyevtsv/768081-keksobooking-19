@@ -90,10 +90,11 @@
 
   var description = adForm.querySelector('#description');
 
+  var titleField = adForm.querySelector('#title');
   var getDefaultAdvertisementForm = function () {
     var defaultAdvertisementForm = {
       avatar: adFormHeader.querySelector('img').src,
-      title: adForm.querySelector('#title').value,
+      title: titleField.value,
       buildingTypeIndex: buildingTypeSelector.selectedIndex,
       price: priceField.value,
       timeinIndex: timeinSelector.selectedIndex,
@@ -131,7 +132,7 @@
 
   var setDefaultAdvertisementForm = function () {
     adFormHeader.querySelector('img').src = defaultAdvertisementForm.avatar;
-    adForm.querySelector('#title').value = defaultAdvertisementForm.title;
+    titleField.value = defaultAdvertisementForm.title;
     address.value = defaultAdvertisementForm.address;
     buildingTypeSelector.selectedIndex = defaultAdvertisementForm.buildingTypeIndex;
     priceField.value = defaultAdvertisementForm.price;
@@ -191,6 +192,11 @@
     window.form.isActive = false;
     setDefaultAdvertisementForm();
     setDefaultAdvertisementFilter();
+
+    titleField.removeEventListener('invalid', window.form.onAdvertisementFieldsInvalid);
+    priceField.removeEventListener('invalid', window.form.onAdvertisementFieldsInvalid);
+    roomNumberSelector.removeEventListener('invalid', window.form.onAdvertisementFieldsInvalid);
+    guestNumberSelector.removeEventListener('invalid', window.form.onAdvertisementFieldsInvalid);
   };
 
   var onSuccess = function (data) {
@@ -262,8 +268,21 @@
     evt.preventDefault();
   });
 
+  var resetInvalidBorders = function () {
+    titleField.style.border = '';
+    priceField.style.border = '';
+    roomNumberSelector.style.border = '';
+    guestNumberSelector.style.border = '';
+  };
+
+  var submitButton = adForm.querySelector('.ad-form__submit');
+  submitButton.addEventListener('click', function () {
+    resetInvalidBorders();
+  });
+
   var reset = adForm.querySelector('.ad-form__reset');
   reset.addEventListener('click', function () {
+    resetInvalidBorders();
     setNotActiveStatus();
   });
 
@@ -406,6 +425,9 @@
         });
       };
       document.addEventListener('mousedown', onReceiveErrorDocumentClick);
+    },
+    onAdvertisementFieldsInvalid: function (evt) {
+      evt.target.style.border = '2px solid #FF0000';
     }
   };
 })();

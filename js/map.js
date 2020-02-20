@@ -13,6 +13,11 @@
     return message;
   };
 
+  var titleField = document.querySelector('#title');
+  var priceField = document.querySelector('#price');
+  var roomNumberSelector = document.querySelector('#room_number');
+  var guestNumberSelector = document.querySelector('#capacity');
+
   window.form.isActive = false;
   var activateMap = function () {
     if (!window.form.isActive) {
@@ -20,6 +25,11 @@
 
       window.card.close();
       window.pin.render(onError);
+
+      titleField.addEventListener('invalid', window.form.onAdvertisementFieldsInvalid);
+      priceField.addEventListener('invalid', window.form.onAdvertisementFieldsInvalid);
+      roomNumberSelector.addEventListener('invalid', window.form.onAdvertisementFieldsInvalid);
+      guestNumberSelector.addEventListener('invalid', window.form.onAdvertisementFieldsInvalid);
     }
   };
 
@@ -119,8 +129,6 @@
   window.form.disable(true);
   window.form.fillAddress(0, 0);
 
-  var roomNumberSelector = document.querySelector('#room_number');
-  var guestNumberSelector = document.querySelector('#capacity');
   window.formHelper.makeGuestRoomsValidation(roomNumberSelector, guestNumberSelector);
   window.form.makeTypeMinPriceValidation();
 })();
