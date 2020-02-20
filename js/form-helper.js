@@ -1,6 +1,8 @@
 'use strict';
 
 (function () {
+  var DEBOUNCE_INTERVAL = 500; // ms
+
   var mapSection = document.querySelector('.map');
   var mapCheckFilter = mapSection.querySelector('.map__filters .map__features');
   var mapSelectFilters = mapSection.querySelectorAll('.map__filters .map__filter');
@@ -17,32 +19,45 @@
   var housingFeatures = mapSection.querySelector('#housing-features');
   var housingFeaturesCheckers = housingFeatures.querySelectorAll('.map__checkbox');
 
+  var filter = function () {
+    window.card.close();
+
+    var housingCheckedFeatures = housingFeatures.querySelectorAll('.map__checkbox:checked');
+    var renderingAdvertisements = window.data.allAdvertisements
+      .filter(function (advertisement) {
+        return window.filter.filterItem(
+            advertisement,
+            housingTypeSelector,
+            housingPriceSelector,
+            housingRoomsSelector,
+            housingGuestsSelector,
+            housingCheckedFeatures
+        );
+      });
+    window.pinHelper.renderPins(
+        renderingAdvertisements.slice(0, window.pinHelper.RENDERED_PINS_COUNT)
+    );
+  };
+
+  var debounceFilter = window.debounce(function () {
+    filter();
+  }, DEBOUNCE_INTERVAL);
+
   window.formHelper = {
     onHousingTypeSelectorChange: function () {
-      window.card.close();
-      var type = housingTypeSelector[housingTypeSelector.selectedIndex].value;
-      var renderingAdvertisements = window.data.allAdvertisements;
-      if (type !== 'any') {
-        renderingAdvertisements = renderingAdvertisements.filter(function (advertisement) {
-          return advertisement.offer.type === type;
-        });
-      }
-      renderingAdvertisements = renderingAdvertisements
-        .slice(0, window.pinHelper.RENDERED_PINS_COUNT);
-
-      window.pinHelper.renderPins(renderingAdvertisements);
+      debounceFilter();
     },
     onHousingPriceSelectorChange: function () {
-      window.card.close();
+      debounceFilter();
     },
     onHousingRoomsSelectorChange: function () {
-      window.card.close();
+      debounceFilter();
     },
     onHousingGuestsSelectorChange: function () {
-      window.card.close();
+      debounceFilter();
     },
     onHousingFeaturesCheckersChange: function () {
-      window.card.close();
+      debounceFilter();
     },
     enableFilter: function () {
       // Показ формы фильтров
