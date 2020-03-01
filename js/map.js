@@ -4,8 +4,8 @@
 // добавляет на страницу нужную карточку, отрисовывает метки
 // и осуществляет взаимодействие карточки и метки на карте
 (function () {
-  var mapSection = document.querySelector('.map');
-  var mapPinsContainer = mapSection.querySelector('.map__pins');
+  var mapSectionElement = document.querySelector('.map');
+  var mapPinsContainerElement = mapSectionElement.querySelector('.map__pins');
 
   var onError = function (message) {
     window.form.isActive = false;
@@ -13,10 +13,10 @@
     return message;
   };
 
-  var titleField = document.querySelector('#title');
-  var priceField = document.querySelector('#price');
-  var roomNumberSelector = document.querySelector('#room_number');
-  var guestNumberSelector = document.querySelector('#capacity');
+  var titleFieldElement = document.querySelector('#title');
+  var priceFieldElement = document.querySelector('#price');
+  var roomNumberSelectorElement = document.querySelector('#room_number');
+  var guestNumberSelectorElement = document.querySelector('#capacity');
 
   window.form.isActive = false;
   var activateMap = function () {
@@ -26,15 +26,15 @@
       window.card.close();
       window.pin.render(onError);
 
-      titleField.addEventListener('invalid', window.form.onAdvertisementFieldsInvalid);
-      priceField.addEventListener('invalid', window.form.onAdvertisementFieldsInvalid);
-      roomNumberSelector.addEventListener('invalid', window.form.onAdvertisementFieldsInvalid);
-      guestNumberSelector.addEventListener('invalid', window.form.onAdvertisementFieldsInvalid);
+      titleFieldElement.addEventListener('invalid', window.form.onAdvertisementFieldsInvalid);
+      priceFieldElement.addEventListener('invalid', window.form.onAdvertisementFieldsInvalid);
+      roomNumberSelectorElement.addEventListener('invalid', window.form.onAdvertisementFieldsInvalid);
+      guestNumberSelectorElement.addEventListener('invalid', window.form.onAdvertisementFieldsInvalid);
     }
   };
 
-  var mainMapPin = mapSection.querySelector('.map__pins .map__pin--main');
-  mainMapPin.addEventListener('mousedown', function (evt) {
+  var mainMapPinElement = mapSectionElement.querySelector('.map__pins .map__pin--main');
+  mainMapPinElement.addEventListener('mousedown', function (evt) {
     evt.preventDefault();
 
     window.utils.isLeftMouseButtonEvent(evt, function () {
@@ -76,7 +76,7 @@
     });
   });
 
-  mainMapPin.addEventListener('keydown', function (evt) {
+  mainMapPinElement.addEventListener('keydown', function (evt) {
     window.utils.isEnterEvent(evt, function () {
       activateMap();
       window.form.fillAddress(0, 0);
@@ -84,51 +84,51 @@
   });
 
   var onMapPinsContainerClick = function (evt) {
-    var targetMapPin = evt.target.closest('button');
-    if (evt.target.matches('.map__pin') || targetMapPin) {
-      var currentMapPin = evt.target;
+    var targetMapPinElement = evt.target.closest('button');
+    if (evt.target.matches('.map__pin') || targetMapPinElement) {
+      var currentMapPinElement = evt.target;
       var index = evt.target.getAttribute('data-adv-id');
       if (index === null) {
-        currentMapPin = targetMapPin;
-        index = targetMapPin.getAttribute('data-adv-id');
+        currentMapPinElement = targetMapPinElement;
+        index = targetMapPinElement.getAttribute('data-adv-id');
       }
 
       if (index !== null) {
         // Пин точно не главный, т.к. у него нет индекса объявления
-        var activePin = mapPinsContainer.querySelector('.map__pin--active');
-        if (activePin !== null) {
-          activePin.classList.remove('map__pin--active');
+        var activePinElement = mapPinsContainerElement.querySelector('.map__pin--active');
+        if (activePinElement !== null) {
+          activePinElement.classList.remove('map__pin--active');
         }
 
         // Если есть открытая карточка то сначала закрываем её
-        var currentMapCard = mapSection.querySelector('.map__card');
-        if (currentMapCard !== null) {
-          mapSection.removeChild(currentMapCard);
+        var currentMapCardElement = mapSectionElement.querySelector('.map__card');
+        if (currentMapCardElement !== null) {
+          mapSectionElement.removeChild(currentMapCardElement);
         }
 
         var advertisement = window.pinHelper.advertisementMapPins[index];
-        var mapCard = window.card.fillAdvertisement(advertisement);
-        var mapFiltersContainer = mapSection
+        var mapCardElement = window.card.fillAdvertisement(advertisement);
+        var mapFiltersContainerElement = mapSectionElement
             .querySelector('.map__filters-container');
-        mapSection.insertBefore(mapCard, mapFiltersContainer);
+        mapSectionElement.insertBefore(mapCardElement, mapFiltersContainerElement);
 
         document.addEventListener('keydown', window.card.onDialogEscPress);
 
-        var popupClose = mapCard.querySelector('.popup__close');
-        popupClose.addEventListener('click', function () {
+        var popupCloseElement = mapCardElement.querySelector('.popup__close');
+        popupCloseElement.addEventListener('click', function () {
           window.card.close();
         });
 
-        currentMapPin.classList.add('map__pin--active');
+        currentMapPinElement.classList.add('map__pin--active');
       }
     }
   };
 
-  mapPinsContainer.addEventListener('click', onMapPinsContainerClick);
+  mapPinsContainerElement.addEventListener('click', onMapPinsContainerClick);
 
   window.form.disable(true);
   window.form.fillAddress(0, 0);
 
-  window.formHelper.makeGuestRoomsValidation(roomNumberSelector, guestNumberSelector);
+  window.formHelper.makeGuestRoomsValidation(roomNumberSelectorElement, guestNumberSelectorElement);
   window.form.makeTypeMinPriceValidation();
 })();

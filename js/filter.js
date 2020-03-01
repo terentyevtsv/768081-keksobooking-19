@@ -96,15 +96,15 @@
     return false;
   };
 
-  var filterByFeatures = function (advertisement, checkedFeatures) {
+  var filterByFeatures = function (advertisement, checkedFeatureElements) {
     if (!advertisement.offer.hasOwnProperty('features')) {
       return false;
     }
 
-    for (var i = 0; i < checkedFeatures.length; ++i) {
+    for (var i = 0; i < checkedFeatureElements.length; ++i) {
       var okFeature = false;
       for (var j = 0; j < advertisement.offer.features.length; ++j) {
-        if (advertisement.offer.features[j] === checkedFeatures[i].value) {
+        if (advertisement.offer.features[j] === checkedFeatureElements[i].value) {
           // Выбранная в фильтре характеристика  есть в объявлении
           okFeature = true;
           break;
@@ -124,18 +124,30 @@
   window.filter = {
     filterItem: function (
         advertisement,
-        typeSelector,
-        priceSelector,
-        roomsSelector,
-        guestsSelector,
-        checkedFeatures
+        typeSelectorElement,
+        priceSelectorElement,
+        roomsSelectorElement,
+        guestsSelectorElement,
+        checkedFeatureElements
     ) {
       return (
-        filterByBuildingType(advertisement, typeSelector[typeSelector.selectedIndex].value) &&
-        filterByPrice(advertisement, priceSelector[priceSelector.selectedIndex].value) &&
-        filterByRooms(advertisement, roomsSelector[roomsSelector.selectedIndex].value) &&
-        filterByGuests(advertisement, guestsSelector[guestsSelector.selectedIndex].value) &&
-        filterByFeatures(advertisement, checkedFeatures)
+        filterByBuildingType(
+            advertisement,
+            typeSelectorElement[typeSelectorElement.selectedIndex].value
+        ) &&
+        filterByPrice(
+            advertisement,
+            priceSelectorElement[priceSelectorElement.selectedIndex].value
+        ) &&
+        filterByRooms(
+            advertisement,
+            roomsSelectorElement[roomsSelectorElement.selectedIndex].value
+        ) &&
+        filterByGuests(
+            advertisement,
+            guestsSelectorElement[guestsSelectorElement.selectedIndex].value
+        ) &&
+        filterByFeatures(advertisement, checkedFeatureElements)
       );
     }
   };

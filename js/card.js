@@ -10,30 +10,30 @@
   ];
 
   // Возвращает DOM элемент если блок не скрыт
-  var getInformationField = function (
-      mapCard,
+  var getInformationFieldElement = function (
+      mapCardElement,
       cssClass,
       parentObject,
       currentProperty
   ) {
-    var item = mapCard.querySelector(cssClass);
+    var cardsItemElement = mapCardElement.querySelector(cssClass);
 
     if (!parentObject.hasOwnProperty(currentProperty)) {
-      item.classList.add('hidden');
+      cardsItemElement.classList.add('hidden');
       return null;
     }
 
-    return item;
+    return cardsItemElement;
   };
 
   // Скрывает не содержащиеся в списке удобства
-  var createFeaturesList = function (features, featureItems, popupFeaturesList) {
+  var createFeaturesList = function (features, featureElements, popupFeatureListElement) {
     var featureExistFlags = {};
     var keys = [];
 
     // Полный список удобств
-    for (var i = 0; i < featureItems.length; ++i) {
-      keys[i] = featureItems[i].classList[1].replace('popup__feature--', '');
+    for (var i = 0; i < featureElements.length; ++i) {
+      keys[i] = featureElements[i].classList[1].replace('popup__feature--', '');
       featureExistFlags[keys[i]] = false;
     }
 
@@ -44,39 +44,39 @@
 
     for (var k = 0; k < keys.length; ++k) {
       if (!featureExistFlags[keys[k]]) {
-        popupFeaturesList.removeChild(featureItems[k]);
+        popupFeatureListElement.removeChild(featureElements[k]);
       }
     }
   };
 
   // формирует список доступных фото недвижимости
-  var createPhotosList = function (photoItemsContainer, mapCard, photos) {
-    var photoItem = mapCard.querySelector('.popup__photo');
+  var createPhotosList = function (photosContainerElement, mapCardElement, photos) {
+    var photoElement = mapCardElement.querySelector('.popup__photo');
     var fragment = document.createDocumentFragment();
 
     // Заполнение существующего и создание новых img
-    var className = photoItem.className;
-    var width = photoItem.width;
-    var height = photoItem.height;
-    var alternateText = photoItem.alt;
+    var className = photoElement.className;
+    var width = photoElement.width;
+    var height = photoElement.height;
+    var alternateText = photoElement.alt;
 
-    photoItem.src = photos[0];
+    photoElement.src = photos[0];
     for (var i = 1; i < photos.length; ++i) {
-      var imageTag = document.createElement('img');
+      var imageElement = document.createElement('img');
 
-      imageTag.src = photos[i];
-      imageTag.className = className;
-      imageTag.width = width;
-      imageTag.height = height;
-      imageTag.alt = alternateText;
+      imageElement.src = photos[i];
+      imageElement.className = className;
+      imageElement.width = width;
+      imageElement.height = height;
+      imageElement.alt = alternateText;
 
-      fragment.appendChild(imageTag);
+      fragment.appendChild(imageElement);
     }
 
-    photoItemsContainer.appendChild(fragment);
+    photosContainerElement.appendChild(fragment);
   };
 
-  var mapCardTemplate = document
+  var mapCardTemplateElement = document
     .querySelector('#card')
     .content
     .querySelector('.map__card');
@@ -93,105 +93,145 @@
 
   var buildingDescriptions = getBuildingDescriptions();
 
-  var mapSection = document.querySelector('.map');
+  var mapSectionElement = document.querySelector('.map');
 
   window.card = {
     fillAdvertisement: function (advertisement) {
-      var mapCard = mapCardTemplate.cloneNode(true);
+      var mapCardElement = mapCardTemplateElement.cloneNode(true);
 
       // Получение блоков для вставки значений
-      var title = getInformationField(mapCard, '.popup__title', advertisement.offer, 'title');
-      var address = getInformationField(mapCard, '.popup__text--address', advertisement.offer, 'address');
-      var price = getInformationField(mapCard, '.popup__text--price', advertisement.offer, 'price');
-      var buildingType = getInformationField(mapCard, '.popup__type', advertisement.offer, 'type');
+      var titleElement = getInformationFieldElement(
+          mapCardElement,
+          '.popup__title',
+          advertisement.offer,
+          'title'
+      );
+      var textAddressElement = getInformationFieldElement(
+          mapCardElement,
+          '.popup__text--address',
+          advertisement.offer,
+          'address'
+      );
+      var textPriceElement = getInformationFieldElement(
+          mapCardElement,
+          '.popup__text--price',
+          advertisement.offer,
+          'price'
+      );
+      var buildingTypeElement = getInformationFieldElement(
+          mapCardElement,
+          '.popup__type',
+          advertisement.offer,
+          'type'
+      );
 
-      var capacity = mapCard.querySelector('.popup__text--capacity');
+      var textCapacityElement = mapCardElement.querySelector('.popup__text--capacity');
       var hasRooms = advertisement.offer.hasOwnProperty('rooms');
       var hasGuests = advertisement.offer.hasOwnProperty('guests');
       if (!hasRooms && !hasGuests) {
-        capacity.classList.add('hidden');
-        capacity = null;
+        textCapacityElement.classList.add('hidden');
+        textCapacityElement = null;
       }
 
-      var time = mapCard.querySelector('.popup__text--time');
+      var textTimeElement = mapCardElement.querySelector('.popup__text--time');
       var hasCheckin = advertisement.offer.hasOwnProperty('checkin');
       var hasCheckout = advertisement.offer.hasOwnProperty('checkout');
       if (!hasCheckin && !hasCheckout) {
-        time.classList.add('hidden');
-        time = null;
+        textTimeElement.classList.add('hidden');
+        textTimeElement = null;
       }
 
-      var popupFeaturesList = getInformationField(mapCard, '.popup__features', advertisement.offer, 'features');
-      var description = getInformationField(mapCard, '.popup__description', advertisement.offer, 'description');
-      var photoItemsContainer = getInformationField(mapCard, '.popup__photos', advertisement.offer, 'photos');
-      var avatar = getInformationField(mapCard, '.popup__avatar', advertisement.author, 'avatar');
+      var popupFeaturesListElement = getInformationFieldElement(
+          mapCardElement,
+          '.popup__features',
+          advertisement.offer,
+          'features'
+      );
+      var descriptionElement = getInformationFieldElement(
+          mapCardElement,
+          '.popup__description',
+          advertisement.offer,
+          'description'
+      );
+      var photosContainerElement = getInformationFieldElement(
+          mapCardElement,
+          '.popup__photos',
+          advertisement.offer,
+          'photos'
+      );
+      var avatarElement = getInformationFieldElement(
+          mapCardElement,
+          '.popup__avatar',
+          advertisement.author,
+          'avatar'
+      );
 
       // Вставка значений в блоки
-      if (title !== null) {
-        title.textContent = advertisement.offer.title;
+      if (titleElement !== null) {
+        titleElement.textContent = advertisement.offer.title;
       }
 
-      if (address !== null) {
-        address.textContent = advertisement.offer.address;
+      if (textAddressElement !== null) {
+        textAddressElement.textContent = advertisement.offer.address;
       }
 
-      if (price !== null) {
-        price.textContent = advertisement.offer.price + '₽/ночь';
+      if (textPriceElement !== null) {
+        textPriceElement.textContent = advertisement.offer.price + '₽/ночь';
       }
 
-      if (buildingType !== null) {
-        buildingType.textContent = buildingDescriptions[advertisement.offer.type];
+      if (buildingTypeElement !== null) {
+        buildingTypeElement.textContent = buildingDescriptions[advertisement.offer.type];
       }
 
-      if (capacity !== null) {
-        capacity.textContent = '';
+      if (textCapacityElement !== null) {
+        textCapacityElement.textContent = '';
 
         if (hasRooms) {
-          capacity.textContent += 'Количество комнат: ' + advertisement.offer.rooms + '. ';
+          textCapacityElement.textContent += 'Количество комнат: ' + advertisement.offer.rooms + '. ';
         }
 
         if (hasGuests) {
-          capacity.textContent += 'Количество гостей: ' + advertisement.offer.guests + '.';
+          textCapacityElement.textContent += 'Количество гостей: ' + advertisement.offer.guests + '.';
         }
       }
 
-      if (time !== null) {
-        time.textContent = '';
+      if (textTimeElement !== null) {
+        textTimeElement.textContent = '';
 
         if (hasCheckin) {
-          time.textContent += 'Заезд после ' + advertisement.offer.checkin + '. ';
+          textTimeElement.textContent += 'Заезд после ' + advertisement.offer.checkin + '. ';
         }
 
         if (hasCheckout) {
-          time.textContent += 'Выезд до ' + advertisement.offer.checkout + '.';
+          textTimeElement.textContent += 'Выезд до ' + advertisement.offer.checkout + '.';
         }
       }
 
-      if (popupFeaturesList !== null) {
-        var featureItems = popupFeaturesList.querySelectorAll('.popup__feature');
-        createFeaturesList(advertisement.offer.features, featureItems, popupFeaturesList);
+      if (popupFeaturesListElement !== null) {
+        var featureElements = popupFeaturesListElement.querySelectorAll('.popup__feature');
+        createFeaturesList(advertisement.offer.features, featureElements, popupFeaturesListElement);
       }
 
-      if (description !== null) {
-        description.textContent = advertisement.offer.description;
+      if (descriptionElement !== null) {
+        descriptionElement.textContent = advertisement.offer.description;
       }
 
-      if (photoItemsContainer !== null) {
-        createPhotosList(photoItemsContainer, mapCard, advertisement.offer.photos);
+      if (photosContainerElement !== null) {
+        createPhotosList(photosContainerElement, mapCardElement, advertisement.offer.photos);
       }
 
-      if (avatar !== null) {
-        avatar.src = advertisement.author.avatar;
+      if (avatarElement !== null) {
+        avatarElement.src = advertisement.author.avatar;
       }
 
       // Возврат заполненного элемента
-      return mapCard;
+      return mapCardElement;
     },
     close: function () {
       // Закрытие карточки
-      var mapCard = mapSection.querySelector('.map__card');
-      if (mapCard !== null) {
-        mapSection.removeChild(mapCard);
+      var mapCardElement = mapSectionElement.querySelector('.map__card');
+      if (mapCardElement !== null) {
+        mapSectionElement.removeChild(mapCardElement);
         document.removeEventListener('keydown', window.card.onDialogEscPress);
       }
     },
