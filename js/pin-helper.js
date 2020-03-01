@@ -3,31 +3,31 @@
 (function () {
   var RENDERED_PINS_COUNT = 5;
 
-  var mapSection = document.querySelector('.map');
-  var mapPinsContainer = mapSection.querySelector('.map__pins');
-  var mapPinTemplate = document
+  var mapSectionElement = document.querySelector('.map');
+  var mapPinsContainerElement = mapSectionElement.querySelector('.map__pins');
+  var mapPinTemplateElement = document
       .querySelector('#pin')
       .content
       .querySelector('.map__pin');
 
   var renderMapPin = function (advertisement) {
-    var mapPin = mapPinTemplate.cloneNode(true);
+    var mapPinElement = mapPinTemplateElement.cloneNode(true);
 
-    var icon = mapPin.querySelector('img');
-    icon.src = advertisement.author.avatar;
-    icon.alt = advertisement.offer.title;
+    var iconElement = mapPinElement.querySelector('img');
+    iconElement.src = advertisement.author.avatar;
+    iconElement.alt = advertisement.offer.title;
 
-    return mapPin;
+    return mapPinElement;
   };
 
   window.pinHelper = {
     RENDERED_PINS_COUNT: RENDERED_PINS_COUNT,
     advertisementMapPins: [],
     remove: function () {
-      var oldMapPins = mapPinsContainer.querySelectorAll('button[data-adv-id]');
-      if (oldMapPins.length > 0) {
-        for (var k = 0; k < oldMapPins.length; ++k) {
-          mapPinsContainer.removeChild(oldMapPins[k]);
+      var oldMapPinElements = mapPinsContainerElement.querySelectorAll('button[data-adv-id]');
+      if (oldMapPinElements.length > 0) {
+        for (var k = 0; k < oldMapPinElements.length; ++k) {
+          mapPinsContainerElement.removeChild(oldMapPinElements[k]);
         }
       }
     },
@@ -40,22 +40,22 @@
         fragment.appendChild(mapPin);
       });
 
-      mapPinsContainer.appendChild(fragment);
-      var mapPins = mapPinsContainer.querySelectorAll('.map__pin');
+      mapPinsContainerElement.appendChild(fragment);
+      var mapPinElements = mapPinsContainerElement.querySelectorAll('.map__pin');
 
       window.pinHelper.advertisementMapPins.length = 0;
-      if (mapPins.length > 1) {
+      if (mapPinElements.length > 1) {
         advertisements.forEach(function (advertisement, j) {
           // j + 1, потому что главный пин не учитывается, он уже отрисован
           // Координаты пина это координаты его верхнего левого угла.
           // Смещаем пин вдоль осей, чтобы координата острия пина совпала с координатой location
           // Проводим эти операции после рендеринга, т.к. до этого размеры пинов неизвестны
-          mapPins[j + 1].style.left =
-            (advertisement.location.x - 0.5 * mapPins[j + 1].offsetWidth) + 'px';
-          mapPins[j + 1].style.top =
-            (advertisement.location.y - mapPins[j + 1].offsetHeight) + 'px';
+          mapPinElements[j + 1].style.left =
+            (advertisement.location.x - 0.5 * mapPinElements[j + 1].offsetWidth) + 'px';
+          mapPinElements[j + 1].style.top =
+            (advertisement.location.y - mapPinElements[j + 1].offsetHeight) + 'px';
 
-          mapPins[j + 1].setAttribute('data-adv-id', j);
+          mapPinElements[j + 1].setAttribute('data-adv-id', j);
           window.pinHelper.advertisementMapPins[j] = advertisement;
         });
       }

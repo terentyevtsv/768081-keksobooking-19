@@ -1,39 +1,39 @@
 'use strict';
 
 (function () {
-  var avatarChooser = document.querySelector('#avatar');
-  var avatarPreview = document.querySelector('.ad-form-header__preview img');
+  var avatarChooserElement = document.querySelector('#avatar');
+  var avatarPreviewElement = document.querySelector('.ad-form-header__preview img');
 
-  avatarChooser.addEventListener('change', function () {
+  avatarChooserElement.addEventListener('change', function () {
     var reader = new FileReader();
 
     reader.addEventListener('load', function () {
-      avatarPreview.src = reader.result;
+      avatarPreviewElement.src = reader.result;
     });
 
-    reader.readAsDataURL(avatarChooser.files[0]);
+    reader.readAsDataURL(avatarChooserElement.files[0]);
   });
 
-  var photosChooser = document.querySelector('#images');
-  var photosPreview = document.querySelector('.ad-form__photo');
-  photosChooser.addEventListener('change', function () {
+  var photosChooserElement = document.querySelector('#images');
+  var photosPreviewElement = document.querySelector('.ad-form__photo');
+  photosChooserElement.addEventListener('change', function () {
     var reader = new FileReader();
 
     reader.addEventListener('load', function () {
-      var photo = photosPreview.querySelector('img');
-      if (photo === null) {
-        photo = document.createElement('img');
-        photo.width = photosPreview.offsetWidth;
-        photo.height = photosPreview.offsetHeight;
-        photo.alt = 'Фото недвижимости';
+      var photoElement = photosPreviewElement.querySelector('img');
+      if (photoElement === null) {
+        photoElement = document.createElement('img');
+        photoElement.width = photosPreviewElement.offsetWidth;
+        photoElement.height = photosPreviewElement.offsetHeight;
+        photoElement.alt = 'Фото недвижимости';
 
-        photosPreview.appendChild(photo);
+        photosPreviewElement.appendChild(photoElement);
       }
 
-      photo.src = reader.result;
+      photoElement.src = reader.result;
     });
 
-    reader.readAsDataURL(photosChooser.files[0]);
+    reader.readAsDataURL(photosChooserElement.files[0]);
   });
 
 })();

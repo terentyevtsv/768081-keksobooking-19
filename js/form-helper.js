@@ -3,35 +3,36 @@
 (function () {
   var DEBOUNCE_INTERVAL = 500; // ms
 
-  var mapSection = document.querySelector('.map');
-  var mapCheckFilter = mapSection.querySelector('.map__filters .map__features');
-  var mapSelectFilters = mapSection.querySelectorAll('.map__filters .map__filter');
-  var adForm = document.querySelector('.notice .ad-form');
-  var adFormHeader = adForm.querySelector('.ad-form-header');
-  var adFormElements = adForm.querySelectorAll('.ad-form__element');
-  var roomNumberSelector = document.querySelector('#room_number');
-  var guestNumberSelector = document.querySelector('#capacity');
-  var housingTypeSelector = mapSection.querySelector('#housing-type');
-  var housingPriceSelector = mapSection.querySelector('#housing-price');
-  var housingRoomsSelector = mapSection.querySelector('#housing-rooms');
-  var housingGuestsSelector = mapSection.querySelector('#housing-guests');
+  var mapSectionElement = document.querySelector('.map');
+  var mapCheckFilterElement = mapSectionElement.querySelector('.map__filters .map__features');
+  var mapSelectFilterElements = mapSectionElement.querySelectorAll('.map__filters .map__filter');
+  var adFormElement = document.querySelector('.notice .ad-form');
+  var adFormHeaderElement = adFormElement.querySelector('.ad-form-header');
+  var adFormElements = adFormElement.querySelectorAll('.ad-form__element');
+  var roomNumberSelectorElement = document.querySelector('#room_number');
+  var guestNumberSelectorElement = document.querySelector('#capacity');
+  var housingTypeSelectorElement = mapSectionElement.querySelector('#housing-type');
+  var housingPriceSelectorElement = mapSectionElement.querySelector('#housing-price');
+  var housingRoomsSelectorElement = mapSectionElement.querySelector('#housing-rooms');
+  var housingGuestsSelectorElement = mapSectionElement.querySelector('#housing-guests');
 
-  var housingFeatures = mapSection.querySelector('#housing-features');
-  var housingFeaturesCheckers = housingFeatures.querySelectorAll('.map__checkbox');
+  var housingFeaturesElement = mapSectionElement.querySelector('#housing-features');
+  var housingFeaturesCheckerElements = housingFeaturesElement.querySelectorAll('.map__checkbox');
 
   var filter = function () {
     window.card.close();
 
-    var housingCheckedFeatures = housingFeatures.querySelectorAll('.map__checkbox:checked');
+    var housingCheckedFeatureElements = housingFeaturesElement
+      .querySelectorAll('.map__checkbox:checked');
     var renderingAdvertisements = window.data.allAdvertisements
       .filter(function (advertisement) {
         return window.filter.filterItem(
             advertisement,
-            housingTypeSelector,
-            housingPriceSelector,
-            housingRoomsSelector,
-            housingGuestsSelector,
-            housingCheckedFeatures
+            housingTypeSelectorElement,
+            housingPriceSelectorElement,
+            housingRoomsSelectorElement,
+            housingGuestsSelectorElement,
+            housingCheckedFeatureElements
         );
       });
     window.pinHelper.renderPins(
@@ -61,46 +62,46 @@
     },
     enableFilter: function () {
       // Показ формы фильтров
-      mapCheckFilter.removeAttribute('disabled');
-      for (var j = 0; j < mapSelectFilters.length; ++j) {
-        mapSelectFilters[j].removeAttribute('disabled');
+      mapCheckFilterElement.removeAttribute('disabled');
+      for (var j = 0; j < mapSelectFilterElements.length; ++j) {
+        mapSelectFilterElements[j].removeAttribute('disabled');
       }
 
-      housingTypeSelector.addEventListener(
+      housingTypeSelectorElement.addEventListener(
           'change',
           window.formHelper.onHousingTypeSelectorChange
       );
-      housingPriceSelector.addEventListener(
+      housingPriceSelectorElement.addEventListener(
           'change',
           window.formHelper.onHousingPriceSelectorChange
       );
-      housingRoomsSelector.addEventListener(
+      housingRoomsSelectorElement.addEventListener(
           'change',
           window.formHelper.onHousingRoomsSelectorChange
       );
-      housingGuestsSelector.addEventListener(
+      housingGuestsSelectorElement.addEventListener(
           'change',
           window.formHelper.onHousingGuestsSelectorChange
       );
 
-      housingFeaturesCheckers.forEach(function (item) {
-        item.addEventListener(
+      housingFeaturesCheckerElements.forEach(function (element) {
+        element.addEventListener(
             'change',
             window.formHelper.onHousingFeaturesCheckersChange
         );
       });
 
-      if (mapSection.classList.contains('map--faded')) {
-        mapSection.classList.remove('map--faded');
+      if (mapSectionElement.classList.contains('map--faded')) {
+        mapSectionElement.classList.remove('map--faded');
       }
     },
-    makeGuestRoomsValidation: function (roomSelector, guestSelector) {
+    makeGuestRoomsValidation: function (roomSelectorElement, guestSelectorElement) {
       var roomNumber = parseInt(
-          roomNumberSelector.options[roomNumberSelector.selectedIndex].value,
+          roomNumberSelectorElement.options[roomNumberSelectorElement.selectedIndex].value,
           10
       );
       var guestNumber = parseInt(
-          guestNumberSelector.options[guestNumberSelector.selectedIndex].value,
+          guestNumberSelectorElement.options[guestNumberSelectorElement.selectedIndex].value,
           10
       );
       var message = '';
@@ -125,21 +126,24 @@
           throw new Error('Неизвестное количество комнат!');
       }
 
-      roomSelector.setCustomValidity(message);
-      guestSelector.setCustomValidity(message);
+      roomSelectorElement.setCustomValidity(message);
+      guestSelectorElement.setCustomValidity(message);
     },
     enableForm: function () {
       // Разблокирование формы объявления
-      adFormHeader.removeAttribute('disabled');
+      adFormHeaderElement.removeAttribute('disabled');
       for (var i = 0; i < adFormElements.length; ++i) {
         adFormElements[i].removeAttribute('disabled');
       }
 
-      if (adForm.classList.contains('ad-form--disabled')) {
-        adForm.classList.remove('ad-form--disabled');
+      if (adFormElement.classList.contains('ad-form--disabled')) {
+        adFormElement.classList.remove('ad-form--disabled');
       }
 
-      window.formHelper.makeGuestRoomsValidation(roomNumberSelector, guestNumberSelector);
+      window.formHelper.makeGuestRoomsValidation(
+          roomNumberSelectorElement,
+          guestNumberSelectorElement
+      );
     }
   };
 })();
