@@ -36,8 +36,8 @@
       var fragment = document.createDocumentFragment();
 
       advertisements.forEach(function (advertisement) {
-        var mapPin = renderMapPin(advertisement);
-        fragment.appendChild(mapPin);
+        var mapPinElement = renderMapPin(advertisement);
+        fragment.appendChild(mapPinElement);
       });
 
       mapPinsContainerElement.appendChild(fragment);

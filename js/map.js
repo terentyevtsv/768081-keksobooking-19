@@ -84,13 +84,13 @@
   });
 
   var onMapPinsContainerClick = function (evt) {
-    var targetMapPin = evt.target.closest('button');
-    if (evt.target.matches('.map__pin') || targetMapPin) {
-      var currentMapPin = evt.target;
+    var targetMapPinElement = evt.target.closest('button');
+    if (evt.target.matches('.map__pin') || targetMapPinElement) {
+      var currentMapPinElement = evt.target;
       var index = evt.target.getAttribute('data-adv-id');
       if (index === null) {
-        currentMapPin = targetMapPin;
-        index = targetMapPin.getAttribute('data-adv-id');
+        currentMapPinElement = targetMapPinElement;
+        index = targetMapPinElement.getAttribute('data-adv-id');
       }
 
       if (index !== null) {
@@ -119,7 +119,7 @@
           window.card.close();
         });
 
-        currentMapPin.classList.add('map__pin--active');
+        currentMapPinElement.classList.add('map__pin--active');
       }
     }
   };
